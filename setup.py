@@ -17,8 +17,8 @@ else:
         readme = f.read()
 
 setup(
-    name="scikit-multilearn",
-    version="0.2.0",
+    name="scikit-multilearn-ng",
+    version="0.0.1",
     packages=find_packages(exclude=["docs", "tests", "*.tests"]),
     install_requires=[
         "scipy>=1.1.0",
@@ -57,8 +57,8 @@ setup(
     author_email="niedakh@gmail.com",
     license="BSD",
     long_description=readme,
-    url="http://scikit.ml/",
-    description="Scikit-multilearn is a BSD-licensed library for multi-label classification that is built on top of the well-known scikit-learn ecosystem.",
+    url="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/",
+    description="Scikit-multilearn-ng is the follow up to scikit-multilearn, a BSD-licensed library for multi-label classification that is built on top of the well-known scikit-learn ecosystem.",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
