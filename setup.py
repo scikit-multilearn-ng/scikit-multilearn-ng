@@ -18,7 +18,7 @@ else:
 
 setup(
     name="scikit-multilearn-ng",
-    version="0.0.1",
+    version="v0.0.1",
     packages=find_packages(exclude=["docs", "tests", "*.tests"]),
     install_requires=[
         "scipy>=1.1.0",
