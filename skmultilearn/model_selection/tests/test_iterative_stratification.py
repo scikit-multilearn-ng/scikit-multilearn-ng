@@ -6,7 +6,7 @@ from skmultilearn.model_selection import IterativeStratification
 class IterativeStratificationTest(unittest.TestCase):
     def test_if_variables_are_initialized_correctly(self):
         stratifier = IterativeStratification(n_splits=2, order=1)
-        y = np.matrix([[0, 0], [1, 0], [0, 1], [1, 1]])
+        y = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
 
         (
             rows,
@@ -57,7 +57,7 @@ class IterativeStratificationTest(unittest.TestCase):
 
     def test_if_positive_evidence_does_not_include_negative_evidence(self):
         stratifier = IterativeStratification(n_splits=2, order=1)
-        y = np.matrix([[0, 0], [1, 0], [0, 1], [1, 1]])
+        y = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
 
         (
             rows,
@@ -85,7 +85,7 @@ class IterativeStratificationTest(unittest.TestCase):
 
     def test_if_negative_evidence_is_distributed(self):
         stratifier = IterativeStratification(n_splits=2, order=1)
-        y = np.matrix([[0, 0], [1, 0], [0, 1], [1, 1]])
+        y = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
 
         (
             rows,
@@ -106,8 +106,8 @@ class IterativeStratificationTest(unittest.TestCase):
 
     def test_if_stratification_works(self):
         stratifier = IterativeStratification(n_splits=2, order=1)
-        X = np.matrix([[0], [1], [2], [3]])
-        y = np.matrix([[0, 0], [1, 0], [0, 1], [1, 1]])
+        X = np.array([[0], [1], [2], [3]])
+        y = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
         self.assertEqual(len(list(stratifier.split(X, y))), 2)
 
 

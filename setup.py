@@ -42,7 +42,7 @@ setup(
             "ipython-genutils",
         ],
         "keras": [
-            "keras",
+            "keras==2.12.0",
             "tensorflow",
         ],
         "meka": [

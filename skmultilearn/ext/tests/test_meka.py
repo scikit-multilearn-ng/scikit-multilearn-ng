@@ -11,7 +11,11 @@ class MekaTest(ClassifierBaseTest):
     def classifier(self):
         meka_classifier = "meka.classifiers.multilabel.BR"
         weka_classifier = "weka.classifiers.rules.ZeroR"
-        return Meka(meka_classifier=meka_classifier, weka_classifier=weka_classifier)
+        return Meka(
+            meka_classifier=meka_classifier,
+            weka_classifier=weka_classifier,
+            meka_classpath=download_meka()
+        )
 
     def test_if_meka_classification_works_on_sparse_input(self):
         self.assertClassifierWorksWithSparsity(self.classifier(), "sparse")

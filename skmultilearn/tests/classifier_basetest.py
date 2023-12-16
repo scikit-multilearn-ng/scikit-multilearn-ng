@@ -12,7 +12,7 @@ class ClassifierBaseTest(unittest.TestCase):
         if feed_sparse:
             return [(sparse.csr_matrix(EXAMPLE_X), sparse.csr_matrix(EXAMPLE_y))]
         else:
-            return [(np.matrix(EXAMPLE_X), np.matrix(EXAMPLE_y))]
+            return [(np.array(EXAMPLE_X), np.array(EXAMPLE_y))]
 
     def assertClassifierWorksWithSparsity(
         self, classifier, sparsity_indicator="sparse"

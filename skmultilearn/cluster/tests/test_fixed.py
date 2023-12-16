@@ -13,7 +13,7 @@ def get_fixed_clusterers():
         [[1, 2, 3], [0, 3, 4]],
     ]
     for clusters in cluster_cases:
-        clusters = np.array(clusters)
+        clusters = np.array(clusters, dtype=object)
         yield clusters, FixedLabelSpaceClusterer(clusters=clusters)
 
 

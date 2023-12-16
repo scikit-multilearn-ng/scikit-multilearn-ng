@@ -28,7 +28,7 @@ class Neuron(object):
 
 
 def _get_label_combination_representation(label_assignment_binary_indicator_list):
-    return label_assignment_binary_indicator_list.nonzero()[0].tostring()
+    return label_assignment_binary_indicator_list.nonzero()[0].tobytes().decode('utf-8')
 
 
 def _get_label_vector(y, i):
@@ -38,7 +38,7 @@ def _get_label_vector(y, i):
 
 
 def _concatenate_with_negation(row):
-    ones = scipy.ones(row.shape)
+    ones = numpy.ones(row.shape)
     if issparse(row):
         return scipy.sparse.hstack((row, ones - row))
     else:
@@ -271,7 +271,7 @@ class MLARAM(MLClassifierBase):
 
             result.append(label)
 
-        return numpy.array(numpy.matrix(result))
+        return numpy.array(result)
 
     def predict_proba(self, X):
         """Predict probabilities of label assignments for X
@@ -364,4 +364,4 @@ class MLARAM(MLClassifierBase):
             rank /= rbsum
             all_ranks.append(rank)
 
-        return numpy.array(numpy.matrix(all_ranks))
+        return numpy.array(all_ranks)

@@ -89,4 +89,4 @@ class BalancedKMeansClusterer(LabelSpaceClustererBase):
                     cluster.append(int(j))
             labelCluster.append(cluster)
 
-        return np.asarray(labelCluster)
+        return np.asarray(labelCluster, dtype=object)

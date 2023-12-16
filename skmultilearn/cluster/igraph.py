@@ -199,5 +199,6 @@ class IGraphLabelGraphClusterer(LabelGraphClustererBase):
         return np.array(
             IGraphLabelGraphClusterer._METHODS[self.method](
                 self.graph_, self.weights_["weight"]
-            )
+            ),
+            dtype=object
         )

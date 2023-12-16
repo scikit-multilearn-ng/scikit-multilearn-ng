@@ -78,4 +78,4 @@ class MatrixLabelSpaceClusterer(LabelSpaceClustererBase):
             result = self.clusterer.fit_predict(X, y.transpose())
         else:
             result = self.clusterer.fit_predict(y.transpose())
-        return np.array(_membership_to_list_of_communities(result, 1 + max(result)))
+        return np.array(_membership_to_list_of_communities(result, 1 + max(result)), dtype=object)
