@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, edited]
   push:
     branches:
-      - 'main'
+      - 'master'
 
 jobs:
   lint:
