@@ -104,7 +104,7 @@ class ClassifierChain(ProblemTransformationBase):
 
 
         clf = GridSearchCV(ClassifierChain(), parameters, scoring='accuracy')
-        clf.fit(x, y)
+        clf.fit(X, y)
 
         print (clf.best_params_, clf.best_score_)
 
