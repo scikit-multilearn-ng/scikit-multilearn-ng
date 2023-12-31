@@ -105,12 +105,6 @@ def iterative_train_test_split(X, y, test_size, random_state=None, shuffle=False
         random_state=random_state,
     )
 
-    if shuffle:
-        indices = list(y.index)
-        check_random_state(random_state).shuffle(indices)
-        X = X.loc[indices]
-        y = y.loc[indices]
-
     train_indexes, test_indexes = next(stratifier.split(X, y))
 
     X_train, y_train = X.loc[train_indexes], y.loc[train_indexes]
@@ -221,12 +215,12 @@ class IterativeStratification(_BaseKFold):
         random_state=None,
     ):
         self._rng_state = check_random_state(random_state)
-        need_shuffle = shuffle or random_state is not None
+        self.need_shuffle = shuffle or random_state is not None
         self.order = order
         super(IterativeStratification, self).__init__(
             n_splits,
-            shuffle=need_shuffle,
-            random_state=self._rng_state if need_shuffle else None,
+            shuffle=self.need_shuffle,
+            random_state=self._rng_state if self.need_shuffle else None,
         )
 
         if sample_distribution_per_fold:
@@ -401,6 +395,15 @@ class IterativeStratification(_BaseKFold):
         fold : List[int]
             indexes of test samples for a given fold, yielded for each of the folds
         """
+        if self.need_shuffle:
+            y_array = np.array(y)
+            indices = np.arange(y_array.shape[0])
+            self._rng_state.shuffle(indices)
+            y = y_array[indices]
+            if sp.issparse(X):
+                X = X.tocsr()[indices]
+            else:
+                X = np.array(X)[indices]
         (
             rows,
             rows_used,
