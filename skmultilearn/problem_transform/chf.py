@@ -1,18 +1,19 @@
 import copy
 import numpy as np
 
-
 from scipy.sparse import hstack, issparse, lil_matrix
 
 from ..base.problem_transformation import ProblemTransformationBase
 from ..base.base import MLClassifierBase
 
+
 class ClassificationHeterogeneousFeature(ProblemTransformationBase):
-    def __init__(self, classifier=None, require_dense=None):
-        """Classification with heterogeneous features
+    """Classification with heterogeneous features
+
         This model is to augment the feature set with extra features which are
         from one for each label in the dataset. The cyclic dependency between
         features and labels is resolved iteratively.
+
         There are two BR layers, composed of given base classifiers for each layer.
         The first layer is proposed to reproduce heterogeneous features, which will
         be augment to the original feature set. Heterogeneous features are predict
@@ -62,12 +63,40 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         with an :class:`sklearn.svm.SVC` base classifier which supports sparse input:
 
         .. code-block:: python
+
+            from skmultilearn.problem_transform import ClassificationHeterogeneousFeature
+            from sklearn.model_selection import GridSearchCV
+            from sklearn.naive_bayes import MultinomialNB
+            from sklearn.svm import SVC
+
+            parameters = [
+                {
+                    'classifier': [MultinomialNB()],
+                    'classifier__alpha': [0.7, 1.0],
+                },
+                {
+                    'classifier': [SVC(probability=True)],
+                    'classifier__kernel': ['rbf', 'linear'],
+                },
+            ]
+
+            clf = GridSearchCV(ClassificationHeterogeneousFeature(), parameters, scoring='accuracy')
+            clf.fit(X, y)
+
+            # Output the best parameters and the corresponding score
+            print(clf.best_params_, clf.best_score_)
+
+            # Example output
+            # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.21
         """
+
+    def __init__(self, classifier=None, require_dense=None):
         super(ClassificationHeterogeneousFeature, self).__init__(classifier, require_dense)
         self.first_layer_ = []
 
     def _generate_partition(self, X, y):
         """Partitions the label space into singletons
+
         Sets `self.partition_` (list of single item lists) and `self.model_count_` (equal to number of labels).
 
         Parameters
@@ -80,7 +109,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         self.partition_ = list(range(y.shape[1]))
         self.model_count_ = y.shape[1]
 
-    def concatenate_clm(self, X, class_membership):
+    def _concatenate_clm(self, X, class_membership):
         """Concatenate origin features and heterogeneous features into one vector.
 
         Parameters
@@ -90,13 +119,10 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         class_membership : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_labels)
             label predict probabilities from X
         """
-        concatenated = lil_matrix((X.shape[0], X.shape[1]+class_membership.shape[1]), dtype='float')
-        concatenated = hstack([X,class_membership])
-
-        return concatenated
+        return  hstack([X, class_membership]).tolil()
 
     def get_class_membership(self, classifiers, X):
-        """ Get heterogenous features from X based on trained classifiers
+        """Get heterogenous features from X based on trained classifiers
 
         Parameters
         ----------
@@ -107,8 +133,9 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         """
         result = lil_matrix((X.shape[0], self._label_count), dtype='float')
 
+        is_ml_classifier = isinstance(self.classifier, MLClassifierBase)
         for label_assignment, classifier in zip(self.partition_, classifiers):
-            if isinstance(self.classifier, MLClassifierBase):
+            if is_ml_classifier:
                 # the multilabel classifier should provide a (n_samples, n_labels) matrix
                 # we just need to reorder it column wise
                 result[:, label_assignment] = classifier.predict_proba(X)
@@ -124,7 +151,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         return result
 
     def fit(self, X, y):
-        """ Fits classifier to training data
+        """Fits classifier to training data
 
         Parameters
         ----------
@@ -142,7 +169,6 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         -----
         .. note :: Input matrices are converted to sparse format internally if a numpy representation is passed
         """
-
         X = self._ensure_input_format(
             X, sparse_format='csr', enforce_sparse=True)
         y = self._ensure_output_format(
@@ -165,7 +191,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         self.classifiers_ = []
 
         class_membership = self.get_class_membership(self.first_layer_, X)
-        X_concat_clm = self.concatenate_clm(X, class_membership)
+        X_concat_clm = self._concatenate_clm(X, class_membership)
 
         for i in range(self.model_count_):
             classifier = copy.deepcopy(self.classifier)
@@ -191,9 +217,8 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         :mod:`scipy.sparse` matrix of `{0, 1}`, shape=(n_samples, n_labels)
             binary indicator matrix with label assignments
         """
-
         class_membership = self.get_class_membership(self.first_layer_, X)
-        X_test_concat_clm = self.concatenate_clm(X, class_membership)
+        X_test_concat_clm = self._concatenate_clm(X, class_membership)
 
         predictions = [self._ensure_multi_label_from_single_class(
             self.classifiers_[label].predict(self._ensure_input_format(X_test_concat_clm)))
@@ -214,14 +239,14 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         :mod:`scipy.sparse` matrix of `float in [0.0, 1.0]`, shape=(n_samples, n_labels)
             matrix with label assignment probabilities
         """
-
         class_membership = self.get_class_membership(self.first_layer_, X)
-        X_test_concat_clm = self.concatenate_clm(X, class_membership)
+        X_test_concat_clm = self._concatenate_clm(X, class_membership)
 
         result = lil_matrix((X.shape[0], self._label_count), dtype='float')
 
+        is_ml_classifier = isinstance(self.classifier, MLClassifierBase)
         for label_assignment, classifier in zip(self.partition_, self.classifiers_):
-            if isinstance(self.classifier, MLClassifierBase):
+            if is_ml_classifier:
                 # the multilabel classifier should provide a (n_samples, n_labels) matrix
                 # we just need to reorder it column wise
                 result[:, label_assignment] = classifier.predict_proba(X_test_concat_clm)
