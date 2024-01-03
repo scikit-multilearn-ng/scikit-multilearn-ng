@@ -31,6 +31,9 @@ single-label problems: single-class or multi-class.
 from .br import BinaryRelevance
 from .cc import ClassifierChain
 from .chf import ClassificationHeterogeneousFeature
+from .gsc import StructuredGridSearchCV
 from .lp import LabelPowerset
+from .iblr import InstanceBasedLogisticRegression
 
-__all__ = ["BinaryRelevance", "ClassifierChain", "ClassificationHeterogeneousFeature", "LabelPowerset"]
+
+__all__ = ["BinaryRelevance", "ClassifierChain", "ClassificationHeterogeneousFeature", "LabelPowerset", "InstanceBasedLogisticRegression", "StructuredGridSearchCV",]
