@@ -237,9 +237,7 @@ class ClassifierChain(ProblemTransformationBase):
             return list(range(self._label_count))
         except AttributeError:
             raise NotFittedError("This Classifier Chain has not been fit yet")
-        
+
     def _revert_order(self, y):
-        original_col_order = [
-            self._order().index(x) for x in range(self._label_count)
-        ]
+        original_col_order = [self._order().index(x) for x in range(self._label_count)]
         return y[:, original_col_order]

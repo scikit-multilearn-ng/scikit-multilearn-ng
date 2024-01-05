@@ -44,4 +44,11 @@ from .lp import LabelPowerset
 from .iblr import InstanceBasedLogisticRegression
 
 
-__all__ = ["BinaryRelevance", "ClassifierChain", "ClassificationHeterogeneousFeature", "LabelPowerset", "InstanceBasedLogisticRegression", "StructuredGridSearchCV",]
+__all__ = [
+    "BinaryRelevance",
+    "ClassifierChain",
+    "ClassificationHeterogeneousFeature",
+    "LabelPowerset",
+    "InstanceBasedLogisticRegression",
+    "StructuredGridSearchCV",
+]

@@ -67,11 +67,21 @@ class StructuredGridSearchCV(ProblemTransformationBase):
         structured_grid_search.fit(X_train, y_train)
         optimal_classifiers = structured_grid_search.find_optm_classifiers(X, y)
     """
-    def __init__(self, estimator, param_grid, scoring=None,
-                 n_jobs=None, refit=True, cv=None, verbose=0,
-                 pre_dispatch='2*n_jobs', error_score=np.nan,
-                 return_train_score=False, print_best_param = False):
 
+    def __init__(
+        self,
+        estimator,
+        param_grid,
+        scoring=None,
+        n_jobs=None,
+        refit=True,
+        cv=None,
+        verbose=0,
+        pre_dispatch="2*n_jobs",
+        error_score=np.nan,
+        return_train_score=False,
+        print_best_param=False,
+    ):
         super(StructuredGridSearchCV, self).__init__()
         self.classifiers_ = []
         self.print_best_param = print_best_param
@@ -79,28 +89,48 @@ class StructuredGridSearchCV(ProblemTransformationBase):
         self.classifier_num = 0
 
         if isinstance(param_grid, list):
-            raise NotImplementedError("Handling multiple classifiers has not yet been implemented for StructuredGridSearchCV. Feel free to open a PR to fix it.")
+            raise NotImplementedError(
+                "Handling multiple classifiers has not yet been implemented for StructuredGridSearchCV. Feel free to open a PR to fix it."
+            )
 
         # Temporary fix until handling of multiple classifiers in param_grid is added
-        self.estimator.classifier = param_grid['classifier'][0] if isinstance(param_grid['classifier'], list) and len(param_grid['classifier']) > 0 else param_grid['classifier']
-        del param_grid['classifier']
+        self.estimator.classifier = (
+            param_grid["classifier"][0]
+            if isinstance(param_grid["classifier"], list)
+            and len(param_grid["classifier"]) > 0
+            else param_grid["classifier"]
+        )
+        del param_grid["classifier"]
 
-
-        if type(self.estimator).__name__ == 'InstanceBasedLogisticRegression':
+        if type(self.estimator).__name__ == "InstanceBasedLogisticRegression":
             self.param_grid = param_grid
-            param_grid = {'n_neighbors': [10]}
-            self.gsc = GridSearchCV(estimator=KNeighborsClassifier(), param_grid=param_grid,
-                                    scoring=scoring, n_jobs=n_jobs,
-                                    refit=refit, cv=cv, verbose=verbose,
-                                    pre_dispatch=pre_dispatch, error_score=error_score,
-                                    return_train_score=return_train_score)
+            param_grid = {"n_neighbors": [10]}
+            self.gsc = GridSearchCV(
+                estimator=KNeighborsClassifier(),
+                param_grid=param_grid,
+                scoring=scoring,
+                n_jobs=n_jobs,
+                refit=refit,
+                cv=cv,
+                verbose=verbose,
+                pre_dispatch=pre_dispatch,
+                error_score=error_score,
+                return_train_score=return_train_score,
+            )
 
         else:
-            self.gsc = GridSearchCV(estimator=estimator.classifier, param_grid=param_grid,
-                                    scoring=scoring, n_jobs=n_jobs,
-                                    refit=refit, cv=cv, verbose=verbose,
-                                    pre_dispatch=pre_dispatch, error_score=error_score,
-                                    return_train_score=return_train_score)
+            self.gsc = GridSearchCV(
+                estimator=estimator.classifier,
+                param_grid=param_grid,
+                scoring=scoring,
+                n_jobs=n_jobs,
+                refit=refit,
+                cv=cv,
+                verbose=verbose,
+                pre_dispatch=pre_dispatch,
+                error_score=error_score,
+                return_train_score=return_train_score,
+            )
 
     def fit(self, X, y):
         """Fits classifier to training data and finds optimal classifier
@@ -123,19 +153,27 @@ class StructuredGridSearchCV(ProblemTransformationBase):
         """
         self.estimator.fit(X, y)
 
-        if type(self.estimator).__name__ == 'ClassificationHeterogeneousFeature':
+        if type(self.estimator).__name__ == "ClassificationHeterogeneousFeature":
             self.estimator.first_layer_ = self.find_optm_classifiers(X, y)
 
-            class_membership = self.estimator._get_class_membership(self.estimator.first_layer_, X)
+            class_membership = self.estimator._get_class_membership(
+                self.estimator.first_layer_, X
+            )
             X_concat_clm = self.estimator._concatenate_clm(X, class_membership)
             self.classifiers_ = self.find_optm_classifiers(X_concat_clm, y)
 
-        elif type(self.estimator).__name__ == 'InstanceBasedLogisticRegression':
+        elif type(self.estimator).__name__ == "InstanceBasedLogisticRegression":
             self.estimator.knn_layer = self.find_optm_classifiers(X, y)
 
-            class_membership = self.estimator._get_class_membership(self.estimator.knn_layer, X)
-            X_concat_clm = self.estimator._concatenate_class_membership(X, class_membership)
-            self.gsc = GridSearchCV(estimator=self.estimator.classifier, param_grid=self.param_grid)
+            class_membership = self.estimator._get_class_membership(
+                self.estimator.knn_layer, X
+            )
+            X_concat_clm = self.estimator._concatenate_class_membership(
+                X, class_membership
+            )
+            self.gsc = GridSearchCV(
+                estimator=self.estimator.classifier, param_grid=self.param_grid
+            )
             self.classifiers_ = self.find_optm_classifiers(X_concat_clm, y)
 
         else:
@@ -195,15 +233,22 @@ class StructuredGridSearchCV(ProblemTransformationBase):
         .. note :: Input matrices are converted to sparse format internally if a numpy representation is passed
         """
         optimized_clfs_ = []
-        if type(self.estimator).__name__ == 'ClassifierChain':
+        if type(self.estimator).__name__ == "ClassifierChain":
             optimized_clfs_ = [None for x in range(y.shape[1])]
             for i in self.estimator._order():
                 gridsearchCV_ = copy.deepcopy(self.gsc)
                 y_subset = self._generate_data_subset(y, i, axis=1)
-                gridsearchCV_.fit(self._ensure_input_format(
-                    X), self._ensure_output_format(y_subset))
-                if self.print_best_param :
-                    print("[", (self.classifier_num + 1), "]", " Classifier Best Parameters : ", gridsearchCV_.best_params_)
+                gridsearchCV_.fit(
+                    self._ensure_input_format(X), self._ensure_output_format(y_subset)
+                )
+                if self.print_best_param:
+                    print(
+                        "[",
+                        (self.classifier_num + 1),
+                        "]",
+                        " Classifier Best Parameters : ",
+                        gridsearchCV_.best_params_,
+                    )
                 optimized_clfs_[i] = gridsearchCV_.best_estimator_
                 X = hstack([X, y_subset])
                 self.classifier_num += 1
@@ -213,10 +258,17 @@ class StructuredGridSearchCV(ProblemTransformationBase):
                 y_subset = self._generate_data_subset(y, i, axis=1)
                 if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                     y_subset = np.ravel(y_subset.toarray())
-                gridsearchCV_.fit(self._ensure_input_format(
-                    X), self._ensure_output_format(y_subset))
-                if self.print_best_param :
-                    print("[", (self.classifier_num + 1), "]", " Classifier Best Parameters : ", gridsearchCV_.best_params_)
+                gridsearchCV_.fit(
+                    self._ensure_input_format(X), self._ensure_output_format(y_subset)
+                )
+                if self.print_best_param:
+                    print(
+                        "[",
+                        (self.classifier_num + 1),
+                        "]",
+                        " Classifier Best Parameters : ",
+                        gridsearchCV_.best_params_,
+                    )
                 optimized_clf = gridsearchCV_.best_estimator_
                 optimized_clfs_.append(optimized_clf)
                 self.classifier_num += 1

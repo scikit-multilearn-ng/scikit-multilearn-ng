@@ -91,7 +91,9 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
     """
 
     def __init__(self, classifier=None, require_dense=None):
-        super(ClassificationHeterogeneousFeature, self).__init__(classifier, require_dense)
+        super(ClassificationHeterogeneousFeature, self).__init__(
+            classifier, require_dense
+        )
         self.first_layer_ = []
 
     def _generate_partition(self, X, y):
@@ -131,7 +133,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
             input feature matrix
         """
-        result = lil_matrix((X.shape[0], self._label_count), dtype='float')
+        result = lil_matrix((X.shape[0], self._label_count), dtype="float")
 
         is_ml_classifier = isinstance(self.classifier, MLClassifierBase)
         for label_assignment, classifier in zip(self.partition_, classifiers):
@@ -143,10 +145,13 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
                 # a base classifier for binary relevance returns
                 # n_samples x n_classes, where n_classes = [0, 1] - 1 is the probability of
                 # the label being assigned
-                result[:, label_assignment] = self._ensure_multi_label_from_single_class(
-                    classifier.predict_proba(
-                        self._ensure_input_format(X))
-                )[:, 1]  # probability that label is assigned
+                result[
+                    :, label_assignment
+                ] = self._ensure_multi_label_from_single_class(
+                    classifier.predict_proba(self._ensure_input_format(X))
+                )[
+                    :, 1
+                ]  # probability that label is assigned
 
         return result
 
@@ -169,10 +174,8 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         -----
         .. note :: Input matrices are converted to sparse format internally if a numpy representation is passed
         """
-        X = self._ensure_input_format(
-            X, sparse_format='csr', enforce_sparse=True)
-        y = self._ensure_output_format(
-            y, sparse_format='csc', enforce_sparse=True)
+        X = self._ensure_input_format(X, sparse_format="csr", enforce_sparse=True)
+        y = self._ensure_output_format(y, sparse_format="csc", enforce_sparse=True)
 
         self.classifiers_ = []
         self._generate_partition(X, y)
@@ -183,8 +186,9 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
             y_subset = self._generate_data_subset(y, self.partition_[i], axis=1)
             if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                 y_subset = np.ravel(y_subset.toarray())
-            classifier.fit(self._ensure_input_format(
-                X), self._ensure_output_format(y_subset))
+            classifier.fit(
+                self._ensure_input_format(X), self._ensure_output_format(y_subset)
+            )
             self.classifiers_.append(classifier)
 
         self.first_layer_ = copy.deepcopy(self.classifiers_)
@@ -198,8 +202,10 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
             y_subset = self._generate_data_subset(y, self.partition_[i], axis=1)
             if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                 y_subset = np.ravel(y_subset.toarray())
-            classifier.fit( self._ensure_input_format(X_concat_clm),
-                self._ensure_output_format(y_subset))
+            classifier.fit(
+                self._ensure_input_format(X_concat_clm),
+                self._ensure_output_format(y_subset),
+            )
             self.classifiers_.append(classifier)
 
         return self
@@ -220,9 +226,14 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         class_membership = self._get_class_membership(self.first_layer_, X)
         X_test_concat_clm = self._concatenate_clm(X, class_membership)
 
-        predictions = [self._ensure_multi_label_from_single_class(
-            self.classifiers_[label].predict(self._ensure_input_format(X_test_concat_clm)))
-            for label in range(self.model_count_)]
+        predictions = [
+            self._ensure_multi_label_from_single_class(
+                self.classifiers_[label].predict(
+                    self._ensure_input_format(X_test_concat_clm)
+                )
+            )
+            for label in range(self.model_count_)
+        ]
 
         return hstack(predictions)
 
@@ -242,21 +253,28 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         class_membership = self._get_class_membership(self.first_layer_, X)
         X_test_concat_clm = self._concatenate_clm(X, class_membership)
 
-        result = lil_matrix((X.shape[0], self._label_count), dtype='float')
+        result = lil_matrix((X.shape[0], self._label_count), dtype="float")
 
         is_ml_classifier = isinstance(self.classifier, MLClassifierBase)
         for label_assignment, classifier in zip(self.partition_, self.classifiers_):
             if is_ml_classifier:
                 # the multilabel classifier should provide a (n_samples, n_labels) matrix
                 # we just need to reorder it column wise
-                result[:, label_assignment] = classifier.predict_proba(X_test_concat_clm)
+                result[:, label_assignment] = classifier.predict_proba(
+                    X_test_concat_clm
+                )
             else:
                 # a base classifier for binary relevance returns
                 # n_samples x n_classes, where n_classes = [0, 1] - 1 is the probability of
                 # the label being assigned
-                result[:, label_assignment] = self._ensure_multi_label_from_single_class(
+                result[
+                    :, label_assignment
+                ] = self._ensure_multi_label_from_single_class(
                     classifier.predict_proba(
-                        self._ensure_input_format(X_test_concat_clm))
-                )[:, 1]  # probability that label is assigned
+                        self._ensure_input_format(X_test_concat_clm)
+                    )
+                )[
+                    :, 1
+                ]  # probability that label is assigned
 
         return result

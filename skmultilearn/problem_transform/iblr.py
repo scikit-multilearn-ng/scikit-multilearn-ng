@@ -84,9 +84,9 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         predictions = classifier.predict(X_test)
 
     Another way to use this classifier is to select the best scenario from a set of single-label classifiers used
-    with Instance-Based Learning and Logistic Regression, this can be done using cross validation grid search. In 
-    the example below, the model with highest accuracy results is selected from either a 
-    :class:`sklearn.naive_bayes.MultinomialNB` or :class:`sklearn.svm.SVC` base classifier, alongside with best 
+    with Instance-Based Learning and Logistic Regression, this can be done using cross validation grid search. In
+    the example below, the model with highest accuracy results is selected from either a
+    :class:`sklearn.naive_bayes.MultinomialNB` or :class:`sklearn.svm.SVC` base classifier, alongside with best
     parameters for that base classifier.
 
     .. code-block:: python
@@ -116,6 +116,7 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         # Example output
         # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.18
     """
+
     def __init__(self, classifier=LogisticRegression(), require_dense=None):
         super(InstanceBasedLogisticRegression, self).__init__(classifier, require_dense)
         self.knn_classifier = KNeighborsClassifier(n_neighbors=10, n_jobs=-1)
@@ -156,15 +157,16 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
             input feature matrix
         """
-        result = lil_matrix((X.shape[0], self._label_count), dtype='float')
+        result = lil_matrix((X.shape[0], self._label_count), dtype="float")
 
         for label_assignment, classifier in zip(self.partition_, classifiers):
             # n_samples x n_classes, where n_classes = [0, 1] - 1 is the probability of
             # the label being assigned
             result[:, label_assignment] = self._ensure_multi_label_from_single_class(
-                classifier.predict_proba(
-                    self._ensure_input_format(X))
-            )[:, 1]  # probability that label is assigned
+                classifier.predict_proba(self._ensure_input_format(X))
+            )[
+                :, 1
+            ]  # probability that label is assigned
 
         return result
 
@@ -187,10 +189,8 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         -----
         .. note :: Input matrices are converted to sparse format internally if a numpy representation is passed
         """
-        X = self._ensure_input_format(
-            X, sparse_format='csr', enforce_sparse=True)
-        y = self._ensure_output_format(
-            y, sparse_format='csc', enforce_sparse=True)
+        X = self._ensure_input_format(X, sparse_format="csr", enforce_sparse=True)
+        y = self._ensure_output_format(y, sparse_format="csc", enforce_sparse=True)
 
         self.classifiers_ = []
         self._generate_partition(X, y)
@@ -201,23 +201,28 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
             y_subset = self._generate_data_subset(y, self.partition_[i], axis=1)
             if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                 y_subset = np.ravel(y_subset.toarray())
-            classifier.fit(self._ensure_input_format(
-                X), self._ensure_output_format(y_subset))
+            classifier.fit(
+                self._ensure_input_format(X), self._ensure_output_format(y_subset)
+            )
             self.classifiers_.append(classifier)
 
         self.knn_layer_ = copy.deepcopy(self.classifiers_)
         self.classifiers_ = []
 
         class_membership = self._get_class_membership(self.knn_layer_, X)
-        X_concat_class_membership = self._concatenate_class_membership(X, class_membership)
+        X_concat_class_membership = self._concatenate_class_membership(
+            X, class_membership
+        )
 
         for i in range(self.model_count_):
             classifier = copy.deepcopy(self.classifier)
             y_subset = self._generate_data_subset(y, self.partition_[i], axis=1)
             if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                 y_subset = np.ravel(y_subset.toarray())
-            classifier.fit(self._ensure_input_format(X_concat_class_membership),
-                           self._ensure_output_format(y_subset))
+            classifier.fit(
+                self._ensure_input_format(X_concat_class_membership),
+                self._ensure_output_format(y_subset),
+            )
             self.classifiers_.append(classifier)
 
         return self
@@ -236,11 +241,18 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
             binary indicator matrix with label assignments
         """
         class_membership = self._get_class_membership(self.knn_layer_, X)
-        X_test_concat_membership = self._concatenate_class_membership(X, class_membership)
+        X_test_concat_membership = self._concatenate_class_membership(
+            X, class_membership
+        )
 
-        predictions = [self._ensure_multi_label_from_single_class(
-            self.classifiers_[label].predict(self._ensure_input_format(X_test_concat_membership)))
-            for label in range(self.model_count_)]
+        predictions = [
+            self._ensure_multi_label_from_single_class(
+                self.classifiers_[label].predict(
+                    self._ensure_input_format(X_test_concat_membership)
+                )
+            )
+            for label in range(self.model_count_)
+        ]
 
         return hstack(predictions)
 
@@ -258,22 +270,31 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
             matrix with label assignment probabilities
         """
         class_membership = self._get_class_membership(self.knn_layer_, X)
-        X_test_concat_class_membership = self._concatenate_class_membership(X, class_membership)
+        X_test_concat_class_membership = self._concatenate_class_membership(
+            X, class_membership
+        )
 
-        result = lil_matrix((X.shape[0], self._label_count), dtype='float')
+        result = lil_matrix((X.shape[0], self._label_count), dtype="float")
 
         for label_assignment, classifier in zip(self.partition_, self.classifiers_):
             if isinstance(self.classifier, MLClassifierBase):
                 # the multilabel classifier should provide a (n_samples, n_labels) matrix
                 # we just need to reorder it column wise
-                result[:, label_assignment] = classifier.predict_proba(X_test_concat_class_membership)
+                result[:, label_assignment] = classifier.predict_proba(
+                    X_test_concat_class_membership
+                )
             else:
                 # a base classifier for binary relevance returns
                 # n_samples x n_classes, where n_classes = [0, 1] - 1 is the probability of
                 # the label being assigned
-                result[:, label_assignment] = self._ensure_multi_label_from_single_class(
+                result[
+                    :, label_assignment
+                ] = self._ensure_multi_label_from_single_class(
                     classifier.predict_proba(
-                        self._ensure_input_format(X_test_concat_class_membership))
-                )[:, 1]  # probability that label is assignedx
+                        self._ensure_input_format(X_test_concat_class_membership)
+                    )
+                )[
+                    :, 1
+                ]  # probability that label is assignedx
 
         return result

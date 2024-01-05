@@ -9,14 +9,14 @@ from skmultilearn.tests.classifier_basetest import ClassifierBaseTest
 class GSCTest(ClassifierBaseTest):
     def test_if_sparse_classification_works_on_non_dense_base_classifier(self):
         parameters = {
-            'classifier': [SVC(probability=True)],
-            'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
+            "classifier": [SVC(probability=True)],
+            "kernel": ["linear", "poly", "rbf", "sigmoid"],
         }
 
         classifier = StructuredGridSearchCV(
             estimator=BinaryRelevance(require_dense=[True, True]),
             param_grid=parameters,
-            scoring='accuracy'
+            scoring="accuracy",
         )
 
         self.assertClassifierWorksWithSparsity(classifier, "sparse")
@@ -24,14 +24,14 @@ class GSCTest(ClassifierBaseTest):
 
     def test_if_sparse_classification_works_on_dense_base_classifier(self):
         parameters = {
-            'classifier': [GaussianNB()],
-            'var_smoothing': [1e-10, 1],
+            "classifier": [GaussianNB()],
+            "var_smoothing": [1e-10, 1],
         }
 
         classifier = StructuredGridSearchCV(
             estimator=BinaryRelevance(require_dense=[True, True]),
             param_grid=parameters,
-            scoring='accuracy'
+            scoring="accuracy",
         )
 
         self.assertClassifierWorksWithSparsity(classifier, "sparse")
