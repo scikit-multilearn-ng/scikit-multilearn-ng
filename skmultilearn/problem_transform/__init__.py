@@ -24,8 +24,16 @@ single-label problems: single-class or multi-class.
 |                                                                             | class with one multi-class classification      |
 |                                                                             | problem                                        |
 +-----------------------------------------------------------------------------+------------------------------------------------+
-
-
+| :class:`~skmultilearn.problem_transform.InstanceBasedLogisticRegression`    | combines instance-based learning with logistic |
+|                                                                             | regression, using neighbors' information as    |
+|                                                                             | features. It has a K-Nearest Neighbor layer    |
+|                                                                             | followed by Logistic Regression classifiers.   |
++-----------------------------------------------------------------------------+------------------------------------------------+
+| :class:`~skmultilearn.problem_transform.StructuredGridSearchCV`             | performs hyperparameter tuning for each label  |
+|                                                                             | classifier, considering BR&CC structural       |
+|                                                                             | properties. It searches for optimal classifiers|
+|                                                                             | with fine-tuned parameters for each label.     |
++-----------------------------------------------------------------------------+------------------------------------------------+
 """
 
 from .br import BinaryRelevance

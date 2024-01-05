@@ -3,92 +3,92 @@ import numpy as np
 
 from scipy.sparse import hstack, issparse, lil_matrix
 
-from ..base.problem_transformation import ProblemTransformationBase
 from ..base.base import MLClassifierBase
+from ..base.problem_transformation import ProblemTransformationBase
 
 
 class ClassificationHeterogeneousFeature(ProblemTransformationBase):
     """Classification with heterogeneous features
 
-        This model is to augment the feature set with extra features which are
-        from one for each label in the dataset. The cyclic dependency between
-        features and labels is resolved iteratively.
+    This model is to augment the feature set with extra features which are
+    from one for each label in the dataset. The cyclic dependency between
+    features and labels is resolved iteratively.
 
-        There are two BR layers, composed of given base classifiers for each layer.
-        The first layer is proposed to reproduce heterogeneous features, which will
-        be augment to the original feature set. Heterogeneous features are predict
-        probabilities produced by base classifier per each label. The second layer
-        is to predict each labels with features from first layer.
+    There are two BR layers, composed of given base classifiers for each layer.
+    The first layer is proposed to reproduce heterogeneous features, which will
+    be augment to the original feature set. Heterogeneous features are predict
+    probabilities produced by base classifier per each label. The second layer
+    is to predict each labels with features from first layer.
 
-        Parameters
-        ----------
-        classifier : :class:`~sklearn.base.BaseEstimator`
-            scikit-learn compatible base classifier
-        require_dense : [bool, bool], optional
-            whether the base classifier requires dense representations
-            for input features and classes/labels matrices in fit/predict.
-            If value not provided, sparse representations are used if base classifier is
-            an instance of :class:`~skmultilearn.base.MLClassifierBase` and dense otherwise.
+    Parameters
+    ----------
+    classifier : :class:`~sklearn.base.BaseEstimator`
+        scikit-learn compatible base classifier
+    require_dense : [bool, bool], optional
+        whether the base classifier requires dense representations
+        for input features and classes/labels matrices in fit/predict.
+        If value not provided, sparse representations are used if base classifier is
+        an instance of :class:`~skmultilearn.base.MLClassifierBase` and dense otherwise.
 
-        Attributes
-        ----------
-        model_count_ : int
-            number of trained models, in this classifier equal to `n_labels`
-        partition_ : List[List[int]], shape=(`model_count_`,)
-            list of lists of label indexes, used to index the output space matrix, set in :meth:`_generate_partition`
-            via :meth:`fit`
-        classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
-            list of classifiers trained per partition, set in :meth:`fit`
-        first_layer_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
-            list of classifiers trained per partition for obtaining heterogeneous feature, set in :meth:`fit`
+    Attributes
+    ----------
+    model_count_ : int
+        number of trained models, in this classifier equal to `n_labels`
+    partition_ : List[List[int]], shape=(`model_count_`,)
+        list of lists of label indexes, used to index the output space matrix, set in :meth:`_generate_partition`
+        via :meth:`fit`
+    classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
+        list of classifiers trained per partition, set in :meth:`fit`
+    first_layer_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
+        list of classifiers trained per partition for obtaining heterogeneous feature, set in :meth:`fit`
 
-        References
-        ----------
-        If used, please cite the scikit-multilearn library and the relevant paper:
+    References
+    ----------
+    If used, please cite the scikit-multilearn library and the relevant paper:
 
-        .. code-block:: bibtex
+    .. code-block:: bibtex
 
-            @inproceedings{godbole2004discriminative,
-                title={Discriminative methods for multi-labeled classification},
-                author={Godbole, Shantanu and Sarawagi, Sunita},
-                booktitle={Pacific-Asia conference on knowledge discovery and data mining},
-                pages={22--30},
-                year={2004},
-                organization={Springer}
-            }
+        @inproceedings{godbole2004discriminative,
+            title={Discriminative methods for multi-labeled classification},
+            author={Godbole, Shantanu and Sarawagi, Sunita},
+            booktitle={Pacific-Asia conference on knowledge discovery and data mining},
+            pages={22--30},
+            year={2004},
+            organization={Springer}
+        }
 
-        Examples
-        --------
-        An example use case for Classification with heterogeneous features
-        with an :class:`sklearn.svm.SVC` base classifier which supports sparse input:
+    Examples
+    --------
+    An example use case for Classification with heterogeneous features
+    with an :class:`sklearn.svm.SVC` base classifier which supports sparse input:
 
-        .. code-block:: python
+    .. code-block:: python
 
-            from skmultilearn.problem_transform import ClassificationHeterogeneousFeature
-            from sklearn.model_selection import GridSearchCV
-            from sklearn.naive_bayes import MultinomialNB
-            from sklearn.svm import SVC
+        from skmultilearn.problem_transform import ClassificationHeterogeneousFeature
+        from sklearn.model_selection import GridSearchCV
+        from sklearn.naive_bayes import MultinomialNB
+        from sklearn.svm import SVC
 
-            parameters = [
-                {
-                    'classifier': [MultinomialNB()],
-                    'classifier__alpha': [0.7, 1.0],
-                },
-                {
-                    'classifier': [SVC(probability=True)],
-                    'classifier__kernel': ['rbf', 'linear'],
-                },
-            ]
+        parameters = [
+            {
+                'classifier': [MultinomialNB()],
+                'classifier__alpha': [0.7, 1.0],
+            },
+            {
+                'classifier': [SVC(probability=True)],
+                'classifier__kernel': ['rbf', 'linear'],
+            },
+        ]
 
-            clf = GridSearchCV(ClassificationHeterogeneousFeature(), parameters, scoring='accuracy')
-            clf.fit(X, y)
+        clf = GridSearchCV(ClassificationHeterogeneousFeature(), parameters, scoring='accuracy')
+        clf.fit(X, y)
 
-            # Output the best parameters and the corresponding score
-            print(clf.best_params_, clf.best_score_)
+        # Output the best parameters and the corresponding score
+        print(clf.best_params_, clf.best_score_)
 
-            # Example output
-            # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.21
-        """
+        # Example output
+        # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.21
+    """
 
     def __init__(self, classifier=None, require_dense=None):
         super(ClassificationHeterogeneousFeature, self).__init__(classifier, require_dense)
@@ -119,9 +119,9 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         class_membership : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_labels)
             label predict probabilities from X
         """
-        return  hstack([X, class_membership]).tolil()
+        return hstack([X, class_membership]).tolil()
 
-    def get_class_membership(self, classifiers, X):
+    def _get_class_membership(self, classifiers, X):
         """Get heterogenous features from X based on trained classifiers
 
         Parameters
@@ -190,7 +190,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         self.first_layer_ = copy.deepcopy(self.classifiers_)
         self.classifiers_ = []
 
-        class_membership = self.get_class_membership(self.first_layer_, X)
+        class_membership = self._get_class_membership(self.first_layer_, X)
         X_concat_clm = self._concatenate_clm(X, class_membership)
 
         for i in range(self.model_count_):
@@ -217,7 +217,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         :mod:`scipy.sparse` matrix of `{0, 1}`, shape=(n_samples, n_labels)
             binary indicator matrix with label assignments
         """
-        class_membership = self.get_class_membership(self.first_layer_, X)
+        class_membership = self._get_class_membership(self.first_layer_, X)
         X_test_concat_clm = self._concatenate_clm(X, class_membership)
 
         predictions = [self._ensure_multi_label_from_single_class(
@@ -239,7 +239,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         :mod:`scipy.sparse` matrix of `float in [0.0, 1.0]`, shape=(n_samples, n_labels)
             matrix with label assignment probabilities
         """
-        class_membership = self.get_class_membership(self.first_layer_, X)
+        class_membership = self._get_class_membership(self.first_layer_, X)
         X_test_concat_clm = self._concatenate_clm(X, class_membership)
 
         result = lil_matrix((X.shape[0], self._label_count), dtype='float')

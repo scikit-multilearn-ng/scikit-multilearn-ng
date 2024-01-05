@@ -1,7 +1,7 @@
 import numpy as np
 from .base import MLClassifierBase
 from ..utils import matrix_creation_function_for_format
-from scipy.sparse import issparse, csr_matrix
+from scipy.sparse import issparse
 
 
 class ProblemTransformationBase(MLClassifierBase):
@@ -16,8 +16,11 @@ class ProblemTransformationBase(MLClassifierBase):
     Scikit-multilearn provides a number of such methods:
 
     - :class:`BinaryRelevance` - performs a single-label single-class classification for each label and sums the results :class:`BinaryRelevance`
+    - :class:`ClassificationHeterogeneousFeature` - performs augmentation of the feature set with extra features derived from label probabilities, iteratively resolving cyclic dependencies between features and labels.
     - :class:`ClassifierChains` - performs a single-label single-class classification for each label and sums the results :class:`ClassifierChain`
     - :class:`LabelPowerset` - performs a single-label single-class classification for each label and sums the results :class:`LabelPowerset`
+    - :class:`InstanceBasedLogisticRegression` - performs a combination of instance-based learning and logistic regression, using a K-Nearest Neighbor layer followed by Logistic Regression classifiers :class:`InstanceBasedLogisticRegression`
+    - :class:`StructuredGridSearchCV` - performs hyperparameter tuning for each label classifier, considering structural properties and optimizing classifiers for each label :class:`StructuredGridSearchCV`
 
     Parameters
     ----------

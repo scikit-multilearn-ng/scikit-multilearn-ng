@@ -2,45 +2,51 @@ import copy
 import numpy as np
 
 from scipy.sparse import hstack, issparse, lil_matrix
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
-from ..base.problem_transformation import ProblemTransformationBase
 from ..base.base import MLClassifierBase
+from ..base.problem_transformation import ProblemTransformationBase
 
 
 class InstanceBasedLogisticRegression(ProblemTransformationBase):
-    def __init__(self, classifier=LogisticRegression(), require_dense=None):
-        """Combining Instance-Based Learning and Logistic Regression
-        This idea is put into practice by means of a learning algorithm
-        that realizes instance-based classification as
-        logistic regression, using the information coming from the neighbors
-        of an instance x as a “feature”.
-        The first classifier layer is filled with K-Nearest Neighbor models,
-        while the second classifier layer is filled with another classifiers,
-        Logistic Regression as default.
-        Parameters
-        ----------
-        require_dense : [bool, bool], optional
-            whether the base classifier requires dense representations
-            for input features and classes/labels matrices in fit/predict.
-            If value not provided, sparse representations are used if base classifier is
-            an instance of :class:`~skmultilearn.base.MLClassifierBase` and dense otherwise.
-        Attributes
-        ----------
-        model_count_ : int
-            number of trained models, in this classifier equal to `n_labels`
-        partition_ : List[List[int]], shape=(`model_count_`,)
-            list of lists of label indexes, used to index the output space matrix, set in :meth:`_generate_partition`
-            via :meth:`fit`
-        classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
-            list of classifiers trained per partition, set in :meth:`fit`
-        knn_layer_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
-            list of classifiers trained per partition in first layer, set in :meth:`fit`
-        References
-        ----------
-        If used, please cite the scikit-multilearn library and the relevant paper:
-        .. code-block:: bibtex
+    """Combining Instance-Based Learning and Logistic Regression
+
+    This idea is put into practice by means of a learning algorithm
+    that realizes instance-based classification as
+    logistic regression, using the information coming from the neighbors
+    of an instance x as a “feature”.
+
+    The first classifier layer is filled with K-Nearest Neighbor models,
+    while the second classifier layer is filled with another classifiers,
+    Logistic Regression as default.
+
+    Parameters
+    ----------
+    require_dense : [bool, bool], optional
+        whether the base classifier requires dense representations
+        for input features and classes/labels matrices in fit/predict.
+        If value not provided, sparse representations are used if base classifier is
+        an instance of :class:`~skmultilearn.base.MLClassifierBase` and dense otherwise.
+
+    Attributes
+    ----------
+    model_count_ : int
+        number of trained models, in this classifier equal to `n_labels`
+    partition_ : List[List[int]], shape=(`model_count_`,)
+        list of lists of label indexes, used to index the output space matrix, set in :meth:`_generate_partition`
+        via :meth:`fit`
+    classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
+        list of classifiers trained per partition, set in :meth:`fit`
+    knn_layer_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
+        list of classifiers trained per partition in first layer, set in :meth:`fit`
+
+    References
+    ----------
+    If used, please cite the scikit-multilearn library and the relevant paper:
+
+    .. code-block:: bibtex
+
         @article{cheng2009combining,
             title={Combining instance-based learning and logistic regression for multilabel classification},
             author={Cheng, Weiwei and H{\"u}llermeier, Eyke},
@@ -51,7 +57,66 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
             year={2009},
             publisher={Springer}
         }
-        """
+
+    Examples
+    --------
+    An example use case for Classifier Chains
+    with an :class:`sklearn.svm.SVC` base classifier which supports sparse input:
+
+    .. code-block:: python
+
+        from skmultilearn.problem_transform import InstanceBasedLogisticRegression
+        from sklearn.svm import SVC
+
+        # initialize Instance-Based Learning and Logistic Regression multi-label classifier
+        # with an SVM classifier
+        # SVM in scikit only supports the X matrix in sparse representation
+
+        classifier = InstanceBasedLogisticRegression(
+            classifier = SVC(),
+            require_dense = [False, True]
+        )
+
+        # train
+        classifier.fit(X_train, y_train)
+
+        # predict
+        predictions = classifier.predict(X_test)
+
+    Another way to use this classifier is to select the best scenario from a set of single-label classifiers used
+    with Instance-Based Learning and Logistic Regression, this can be done using cross validation grid search. In 
+    the example below, the model with highest accuracy results is selected from either a 
+    :class:`sklearn.naive_bayes.MultinomialNB` or :class:`sklearn.svm.SVC` base classifier, alongside with best 
+    parameters for that base classifier.
+
+    .. code-block:: python
+
+        from skmultilearn.problem_transform import InstanceBasedLogisticRegression
+        from sklearn.model_selection import GridSearchCV
+        from sklearn.naive_bayes import MultinomialNB
+        from sklearn.svm import SVC
+
+        parameters = [
+            {
+                'classifier': [MultinomialNB()],
+                'classifier__alpha': [0.7, 1.0],
+            },
+            {
+                'classifier': [SVC()],
+                'classifier__kernel': ['rbf', 'linear'],
+            },
+        ]
+
+        # Create a ClassificationHeterogeneousFeature instance with GridSearchCV
+        clf = GridSearchCV(InstanceBasedLogisticRegression(), parameters, scoring='accuracy')
+        clf.fit(X, y)
+
+        print(clf.best_params_, clf.best_score_)
+
+        # Example output
+        # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.18
+    """
+    def __init__(self, classifier=LogisticRegression(), require_dense=None):
         super(InstanceBasedLogisticRegression, self).__init__(classifier, require_dense)
         self.knn_classifier = KNeighborsClassifier(n_neighbors=10, n_jobs=-1)
         self.knn_layer_ = []
@@ -69,8 +134,9 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         self.partition_ = list(range(y.shape[1]))
         self.model_count_ = y.shape[1]
 
-    def concatenate_class_membership(self, X, class_membership):
+    def _concatenate_class_membership(self, X, class_membership):
         """Concatenate original features and instance-based information from first layer
+
         Parameters
         ----------
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
@@ -78,14 +144,11 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         class_membership : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_labels)
             label predict probabilities from X
         """
+        return hstack([X, class_membership]).tolil()
 
-        concatenated = lil_matrix((X.shape[0], X.shape[1] + class_membership.shape[1]), dtype='float')
-        concatenated = hstack([X, class_membership])
-
-        return concatenated
-
-    def get_class_membership(self, classifiers, X):
+    def _get_class_membership(self, classifiers, X):
         """Extract instance-based information from original data X
+
         Parameters
         ----------
         classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
@@ -93,7 +156,6 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
             input feature matrix
         """
-
         result = lil_matrix((X.shape[0], self._label_count), dtype='float')
 
         for label_assignment, classifier in zip(self.partition_, classifiers):
@@ -108,16 +170,19 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
 
     def fit(self, X, y):
         """Fits classifier to training data
+
         Parameters
         ----------
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
             input feature matrix
         y : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix of `{0, 1}`, shape=(n_samples, n_labels)
             binary indicator matrix with label assignments
+
         Returns
         -------
         self
             fitted instance of self
+
         Notes
         -----
         .. note :: Input matrices are converted to sparse format internally if a numpy representation is passed
@@ -143,8 +208,8 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
         self.knn_layer_ = copy.deepcopy(self.classifiers_)
         self.classifiers_ = []
 
-        class_membership = self.get_class_membership(self.knn_layer_, X)
-        X_concat_class_membership = self.concatenate_class_membership(X, class_membership)
+        class_membership = self._get_class_membership(self.knn_layer_, X)
+        X_concat_class_membership = self._concatenate_class_membership(X, class_membership)
 
         for i in range(self.model_count_):
             classifier = copy.deepcopy(self.classifier)
@@ -159,17 +224,19 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
 
     def predict(self, X):
         """Predict labels from X
+
         Parameters
         ----------
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
             input feature matrix
+
         Returns
         -------
         :mod:`scipy.sparse` matrix of `{0, 1}`, shape=(n_samples, n_labels)
             binary indicator matrix with label assignments
         """
-        class_membership = self.get_class_membership(self.knn_layer_, X)
-        X_test_concat_membership = self.concatenate_class_membership(X, class_membership)
+        class_membership = self._get_class_membership(self.knn_layer_, X)
+        X_test_concat_membership = self._concatenate_class_membership(X, class_membership)
 
         predictions = [self._ensure_multi_label_from_single_class(
             self.classifiers_[label].predict(self._ensure_input_format(X_test_concat_membership)))
@@ -179,17 +246,19 @@ class InstanceBasedLogisticRegression(ProblemTransformationBase):
 
     def predict_proba(self, X):
         """Predict probabilities of each labels from given X
+
         Parameters
         ----------
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
             input feature matrix
+
         Returns
         -------
         :mod:`scipy.sparse` matrix of `float in [0.0, 1.0]`, shape=(n_samples, n_labels)
             matrix with label assignment probabilities
         """
-        class_membership = self.get_class_membership(self.knn_layer_, X)
-        X_test_concat_class_membership = self.concatenate_class_membership(X, class_membership)
+        class_membership = self._get_class_membership(self.knn_layer_, X)
+        X_test_concat_class_membership = self._concatenate_class_membership(X, class_membership)
 
         result = lil_matrix((X.shape[0], self._label_count), dtype='float')
 
