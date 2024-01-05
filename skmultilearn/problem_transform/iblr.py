@@ -2,28 +2,27 @@ import copy
 import numpy as np
 
 from scipy.sparse import hstack, issparse, lil_matrix
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 from ..base.base import MLClassifierBase
 from ..base.problem_transformation import ProblemTransformationBase
 
 
-class ClassificationHeterogeneousFeature(ProblemTransformationBase):
-    """Classification with heterogeneous features
+class InstanceBasedLogisticRegression(ProblemTransformationBase):
+    """Combining Instance-Based Learning and Logistic Regression
 
-    This model is to augment the feature set with extra features which are
-    from one for each label in the dataset. The cyclic dependency between
-    features and labels is resolved iteratively.
+    This idea is put into practice by means of a learning algorithm
+    that realizes instance-based classification as
+    logistic regression, using the information coming from the neighbors
+    of an instance x as a “feature”.
 
-    There are two BR layers, composed of given base classifiers for each layer.
-    The first layer is proposed to reproduce heterogeneous features, which will
-    be augment to the original feature set. Heterogeneous features are predict
-    probabilities produced by base classifier per each label. The second layer
-    is to predict each labels with features from first layer.
+    The first classifier layer is filled with K-Nearest Neighbor models,
+    while the second classifier layer is filled with another classifiers,
+    Logistic Regression as default.
 
     Parameters
     ----------
-    classifier : :class:`~sklearn.base.BaseEstimator`
-        scikit-learn compatible base classifier
     require_dense : [bool, bool], optional
         whether the base classifier requires dense representations
         for input features and classes/labels matrices in fit/predict.
@@ -39,8 +38,8 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         via :meth:`fit`
     classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
         list of classifiers trained per partition, set in :meth:`fit`
-    first_layer_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
-        list of classifiers trained per partition for obtaining heterogeneous feature, set in :meth:`fit`
+    knn_layer_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `model_count`
+        list of classifiers trained per partition in first layer, set in :meth:`fit`
 
     References
     ----------
@@ -48,23 +47,51 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
 
     .. code-block:: bibtex
 
-        @inproceedings{godbole2004discriminative,
-            title={Discriminative methods for multi-labeled classification},
-            author={Godbole, Shantanu and Sarawagi, Sunita},
-            booktitle={Pacific-Asia conference on knowledge discovery and data mining},
-            pages={22--30},
-            year={2004},
-            organization={Springer}
+        @article{cheng2009combining,
+            title={Combining instance-based learning and logistic regression for multilabel classification},
+            author={Cheng, Weiwei and H{\"u}llermeier, Eyke},
+            journal={Machine Learning},
+            volume={76},
+            number={2-3},
+            pages={211--225},
+            year={2009},
+            publisher={Springer}
         }
 
     Examples
     --------
-    An example use case for Classification with heterogeneous features
+    An example use case for Classifier Chains
     with an :class:`sklearn.svm.SVC` base classifier which supports sparse input:
 
     .. code-block:: python
 
-        from skmultilearn.problem_transform import ClassificationHeterogeneousFeature
+        from skmultilearn.problem_transform import InstanceBasedLogisticRegression
+        from sklearn.svm import SVC
+
+        # initialize Instance-Based Learning and Logistic Regression multi-label classifier
+        # with an SVM classifier
+        # SVM in scikit only supports the X matrix in sparse representation
+
+        classifier = InstanceBasedLogisticRegression(
+            classifier = SVC(),
+            require_dense = [False, True]
+        )
+
+        # train
+        classifier.fit(X_train, y_train)
+
+        # predict
+        predictions = classifier.predict(X_test)
+
+    Another way to use this classifier is to select the best scenario from a set of single-label classifiers used
+    with Instance-Based Learning and Logistic Regression, this can be done using cross validation grid search. In
+    the example below, the model with highest accuracy results is selected from either a
+    :class:`sklearn.naive_bayes.MultinomialNB` or :class:`sklearn.svm.SVC` base classifier, alongside with best
+    parameters for that base classifier.
+
+    .. code-block:: python
+
+        from skmultilearn.problem_transform import InstanceBasedLogisticRegression
         from sklearn.model_selection import GridSearchCV
         from sklearn.naive_bayes import MultinomialNB
         from sklearn.svm import SVC
@@ -75,32 +102,29 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
                 'classifier__alpha': [0.7, 1.0],
             },
             {
-                'classifier': [SVC(probability=True)],
+                'classifier': [SVC()],
                 'classifier__kernel': ['rbf', 'linear'],
             },
         ]
 
-        clf = GridSearchCV(ClassificationHeterogeneousFeature(), parameters, scoring='accuracy')
+        # Create a ClassificationHeterogeneousFeature instance with GridSearchCV
+        clf = GridSearchCV(InstanceBasedLogisticRegression(), parameters, scoring='accuracy')
         clf.fit(X, y)
 
-        # Output the best parameters and the corresponding score
         print(clf.best_params_, clf.best_score_)
 
         # Example output
-        # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.21
+        # {'classifier': MultinomialNB(alpha=0.7), 'classifier__alpha': 0.7} 0.18
     """
 
-    def __init__(self, classifier=None, require_dense=None):
-        super(ClassificationHeterogeneousFeature, self).__init__(
-            classifier, require_dense
-        )
-        self.first_layer_ = []
+    def __init__(self, classifier=LogisticRegression(), require_dense=None):
+        super(InstanceBasedLogisticRegression, self).__init__(classifier, require_dense)
+        self.knn_classifier = KNeighborsClassifier(n_neighbors=10, n_jobs=-1)
+        self.knn_layer_ = []
 
     def _generate_partition(self, X, y):
         """Partitions the label space into singletons
-
         Sets `self.partition_` (list of single item lists) and `self.model_count_` (equal to number of labels).
-
         Parameters
         ----------
         X : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix, shape=(n_samples, n_features)
@@ -111,8 +135,8 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         self.partition_ = list(range(y.shape[1]))
         self.model_count_ = y.shape[1]
 
-    def _concatenate_clm(self, X, class_membership):
-        """Concatenate origin features and heterogeneous features into one vector.
+    def _concatenate_class_membership(self, X, class_membership):
+        """Concatenate original features and instance-based information from first layer
 
         Parameters
         ----------
@@ -124,7 +148,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         return hstack([X, class_membership]).tolil()
 
     def _get_class_membership(self, classifiers, X):
-        """Get heterogenous features from X based on trained classifiers
+        """Extract instance-based information from original data X
 
         Parameters
         ----------
@@ -135,23 +159,14 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         """
         result = lil_matrix((X.shape[0], self._label_count), dtype="float")
 
-        is_ml_classifier = isinstance(self.classifier, MLClassifierBase)
         for label_assignment, classifier in zip(self.partition_, classifiers):
-            if is_ml_classifier:
-                # the multilabel classifier should provide a (n_samples, n_labels) matrix
-                # we just need to reorder it column wise
-                result[:, label_assignment] = classifier.predict_proba(X)
-            else:
-                # a base classifier for binary relevance returns
-                # n_samples x n_classes, where n_classes = [0, 1] - 1 is the probability of
-                # the label being assigned
-                result[
-                    :, label_assignment
-                ] = self._ensure_multi_label_from_single_class(
-                    classifier.predict_proba(self._ensure_input_format(X))
-                )[
-                    :, 1
-                ]  # probability that label is assigned
+            # n_samples x n_classes, where n_classes = [0, 1] - 1 is the probability of
+            # the label being assigned
+            result[:, label_assignment] = self._ensure_multi_label_from_single_class(
+                classifier.predict_proba(self._ensure_input_format(X))
+            )[
+                :, 1
+            ]  # probability that label is assigned
 
         return result
 
@@ -182,7 +197,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         self._label_count = y.shape[1]
 
         for i in range(self.model_count_):
-            classifier = copy.deepcopy(self.classifier)
+            classifier = copy.deepcopy(self.knn_classifier)
             y_subset = self._generate_data_subset(y, self.partition_[i], axis=1)
             if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                 y_subset = np.ravel(y_subset.toarray())
@@ -191,11 +206,13 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
             )
             self.classifiers_.append(classifier)
 
-        self.first_layer_ = copy.deepcopy(self.classifiers_)
+        self.knn_layer_ = copy.deepcopy(self.classifiers_)
         self.classifiers_ = []
 
-        class_membership = self._get_class_membership(self.first_layer_, X)
-        X_concat_clm = self._concatenate_clm(X, class_membership)
+        class_membership = self._get_class_membership(self.knn_layer_, X)
+        X_concat_class_membership = self._concatenate_class_membership(
+            X, class_membership
+        )
 
         for i in range(self.model_count_):
             classifier = copy.deepcopy(self.classifier)
@@ -203,7 +220,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
             if issparse(y_subset) and y_subset.ndim > 1 and y_subset.shape[1] == 1:
                 y_subset = np.ravel(y_subset.toarray())
             classifier.fit(
-                self._ensure_input_format(X_concat_clm),
+                self._ensure_input_format(X_concat_class_membership),
                 self._ensure_output_format(y_subset),
             )
             self.classifiers_.append(classifier)
@@ -211,7 +228,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         return self
 
     def predict(self, X):
-        """Predict labels for X
+        """Predict labels from X
 
         Parameters
         ----------
@@ -223,13 +240,15 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         :mod:`scipy.sparse` matrix of `{0, 1}`, shape=(n_samples, n_labels)
             binary indicator matrix with label assignments
         """
-        class_membership = self._get_class_membership(self.first_layer_, X)
-        X_test_concat_clm = self._concatenate_clm(X, class_membership)
+        class_membership = self._get_class_membership(self.knn_layer_, X)
+        X_test_concat_membership = self._concatenate_class_membership(
+            X, class_membership
+        )
 
         predictions = [
             self._ensure_multi_label_from_single_class(
                 self.classifiers_[label].predict(
-                    self._ensure_input_format(X_test_concat_clm)
+                    self._ensure_input_format(X_test_concat_membership)
                 )
             )
             for label in range(self.model_count_)
@@ -238,7 +257,7 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         return hstack(predictions)
 
     def predict_proba(self, X):
-        """Predict probabilities of label assignments for X
+        """Predict probabilities of each labels from given X
 
         Parameters
         ----------
@@ -250,18 +269,19 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
         :mod:`scipy.sparse` matrix of `float in [0.0, 1.0]`, shape=(n_samples, n_labels)
             matrix with label assignment probabilities
         """
-        class_membership = self._get_class_membership(self.first_layer_, X)
-        X_test_concat_clm = self._concatenate_clm(X, class_membership)
+        class_membership = self._get_class_membership(self.knn_layer_, X)
+        X_test_concat_class_membership = self._concatenate_class_membership(
+            X, class_membership
+        )
 
         result = lil_matrix((X.shape[0], self._label_count), dtype="float")
 
-        is_ml_classifier = isinstance(self.classifier, MLClassifierBase)
         for label_assignment, classifier in zip(self.partition_, self.classifiers_):
-            if is_ml_classifier:
+            if isinstance(self.classifier, MLClassifierBase):
                 # the multilabel classifier should provide a (n_samples, n_labels) matrix
                 # we just need to reorder it column wise
                 result[:, label_assignment] = classifier.predict_proba(
-                    X_test_concat_clm
+                    X_test_concat_class_membership
                 )
             else:
                 # a base classifier for binary relevance returns
@@ -271,10 +291,10 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
                     :, label_assignment
                 ] = self._ensure_multi_label_from_single_class(
                     classifier.predict_proba(
-                        self._ensure_input_format(X_test_concat_clm)
+                        self._ensure_input_format(X_test_concat_class_membership)
                     )
                 )[
                     :, 1
-                ]  # probability that label is assigned
+                ]  # probability that label is assignedx
 
         return result

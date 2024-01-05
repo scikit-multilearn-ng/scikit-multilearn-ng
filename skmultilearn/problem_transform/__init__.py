@@ -24,13 +24,31 @@ single-label problems: single-class or multi-class.
 |                                                                             | class with one multi-class classification      |
 |                                                                             | problem                                        |
 +-----------------------------------------------------------------------------+------------------------------------------------+
-
-
+| :class:`~skmultilearn.problem_transform.InstanceBasedLogisticRegression`    | combines instance-based learning with logistic |
+|                                                                             | regression, using neighbors' information as    |
+|                                                                             | features. It has a K-Nearest Neighbor layer    |
+|                                                                             | followed by Logistic Regression classifiers.   |
++-----------------------------------------------------------------------------+------------------------------------------------+
+| :class:`~skmultilearn.problem_transform.StructuredGridSearchCV`             | performs hyperparameter tuning for each label  |
+|                                                                             | classifier, considering BR&CC structural       |
+|                                                                             | properties. It searches for optimal classifiers|
+|                                                                             | with fine-tuned parameters for each label.     |
++-----------------------------------------------------------------------------+------------------------------------------------+
 """
 
 from .br import BinaryRelevance
 from .cc import ClassifierChain
 from .chf import ClassificationHeterogeneousFeature
+from .gsc import StructuredGridSearchCV
 from .lp import LabelPowerset
+from .iblr import InstanceBasedLogisticRegression
 
-__all__ = ["BinaryRelevance", "ClassifierChain", "ClassificationHeterogeneousFeature", "LabelPowerset"]
+
+__all__ = [
+    "BinaryRelevance",
+    "ClassifierChain",
+    "ClassificationHeterogeneousFeature",
+    "LabelPowerset",
+    "InstanceBasedLogisticRegression",
+    "StructuredGridSearchCV",
+]
