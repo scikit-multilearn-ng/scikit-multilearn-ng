@@ -14,7 +14,7 @@ class MekaTest(ClassifierBaseTest):
         return Meka(
             meka_classifier=meka_classifier,
             weka_classifier=weka_classifier,
-            meka_classpath=download_meka()
+            meka_classpath=download_meka(),
         )
 
     def test_if_meka_classification_works_on_sparse_input(self):

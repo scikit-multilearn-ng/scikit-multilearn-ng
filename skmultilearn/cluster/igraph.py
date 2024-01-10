@@ -200,5 +200,5 @@ class IGraphLabelGraphClusterer(LabelGraphClustererBase):
             IGraphLabelGraphClusterer._METHODS[self.method](
                 self.graph_, self.weights_["weight"]
             ),
-            dtype=object
+            dtype=object,
         )

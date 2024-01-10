@@ -453,7 +453,7 @@ class Meka(MLClassifierBase):
             '"{}*"'.format(self.meka_classpath),
             self.meka_classifier,
         ]
-        
+
         command_args += args
 
         if self.weka_classifier is not None:

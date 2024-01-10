@@ -57,7 +57,7 @@ setup(
     author_email="niedakh@gmail.com",
     license="BSD",
     long_description=readme,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     url="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/",
     description="Scikit-multilearn-ng is the follow up to scikit-multilearn, a BSD-licensed library for multi-label classification that is built on top of the well-known scikit-learn ecosystem.",
     classifiers=[

@@ -28,7 +28,7 @@ class Neuron(object):
 
 
 def _get_label_combination_representation(label_assignment_binary_indicator_list):
-    return label_assignment_binary_indicator_list.nonzero()[0].tobytes().decode('utf-8')
+    return label_assignment_binary_indicator_list.nonzero()[0].tobytes().decode("utf-8")
 
 
 def _get_label_vector(y, i):

@@ -25,15 +25,15 @@ def example_distribution(folds, desired_size):
     """
     n_splits = float(len(folds))
 
-    return (
-        np.sum(np.fromiter(
+    return np.sum(
+        np.fromiter(
             (
                 np.abs(len(fold) - desired_fold_size)
                 for fold, desired_fold_size in zip(folds, desired_size)
             ),
-            dtype=float
+            dtype=float,
         )
-        / n_splits)
+        / n_splits
     )
 
 
