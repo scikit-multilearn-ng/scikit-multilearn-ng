@@ -1,14 +1,15 @@
-# scikit-multilearn
+# scikit-multilearn-ng
 
-[![PyPI version](https://badge.fury.io/py/scikit-multilearn.svg)](https://badge.fury.io/py/scikit-multilearn)
+[![PyPI version](https://badge.fury.io/py/scikit-multilearn-ng.svg)](https://badge.fury.io/py/scikit-multilearn-ng)
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
-[![Build Status Linux and OSX](https://travis-ci.org/scikit-multilearn/scikit-multilearn.svg?branch=master)](https://travis-ci.org/scikit-multilearn/scikit-multilearn)
-[![Build Status Windows](https://ci.appveyor.com/api/projects/status/vd4k18u1lp5btaql/branch/master?svg=true)](https://ci.appveyor.com/project/niedakh/scikit-multilearn/branch/master)
 
-__scikit-multilearn__ is a Python module capable of performing multi-label
-learning tasks. It is built on-top of various scientific Python packages
+__scikit-multilearn-ng__ is a Python module capable of performing multi-label
+learning tasks and is the follow-up to [scikit-multilearn](https://github.com/scikit-multilearn/scikit-multilearn).
+It is built on-top of various scientific Python packages
 ([numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/)) and
 follows a similar API to that of [scikit-learn](http://scikit-learn.org/).
+
+More documentation (until replaced by scikit-multilearn-ng specific ones):
 
 - __Website:__ [scikit.ml](http://scikit.ml)
 - __Documentation:__ [scikit-multilearn Documentation](http://scikit.ml/api/skmultilearn.html)
@@ -22,37 +23,12 @@ follows a similar API to that of [scikit-learn](http://scikit-learn.org/).
 
 - __Builds upon giants!__ Team-up with the power of numpy and scikit. You can use scikit-learn's base classifiers as scikit-multilearn's classifiers. In addition, the two packages follow a similar API.
 
-## Dependencies
-
-In most cases you will want to follow the requirements defined in the requirements/*.txt files in the package. 
-
-### Base dependencies
-```
-scipy
-numpy
-future
-scikit-learn
-liac-arff # for loading ARFF files
-requests # for dataset module
-networkx # for networkX base community detection clusterers
-python-louvain # for networkX base community detection clusterers
-keras
-```
-
-### GPL-incurring dependencies for two clusterers
-```
-python-igraph # for igraph library based clusterers
-python-graphtool # for graphtool base clusterers
-```
-
-Note: Installing graphtool is complicated, please see: [graphtool install instructions](https://git.skewed.de/count0/graph-tool/wikis/installation-instructions)
-
-## Installation
+## Installation & Dependencies
 
 To install scikit-multilearn, simply type the following command:
 
 ```bash
-$ pip install scikit-multilearn
+$ pip install scikit-multilearn-ng
 ```
 
 This will install the latest release from the Python package index. If you
@@ -60,12 +36,24 @@ wish to install the bleeding-edge version, then clone this repository and
 run `setup.py`:
 
 ```bash
-$ git clone https://github.com/scikit-multilearn/scikit-multilearn.git
-$ cd scikit-multilearn
+$ git clone https://github.com/scikit-multilearn-ng/scikit-multilearn-ng.git
+$ cd scikit-multilearn-ng
 $ python setup.py
 ```
 
+In most cases requirements are installed when you install using `pip install scikit-multilearn-ng` or run `python setup.py install`. There are also optional dependencies `pip install scikit-multilearn-ng[gpl,keras,meka]` installs the GPL-incurring igraph for for igraph library based clusterers, keras for the keras classifiers and requirements for the meka bridge respectively.
+
+To install `openNE`, run:
+
+```bash
+pip install 'openne @ git+https://github.com/thunlp/OpenNE.git@master#subdirectory=src'
+```
+
+Note that installing the GPL licensed graphtool, for graphtool based clusters, is complicated, and must be done manually, please see: [graphtool install instructions](https://git.skewed.de/count0/graph-tool/wikis/installation-instructions)
+
 ## Basic Usage
+
+**Note: You should use the same import statement as previously with scikit-multilearn (`import skmultilearn`), after installation. This allows for quicker switching to this follow-up version.**
 
 Before proceeding to classification,  this library assumes that you have
 a dataset with the following matrices:
@@ -116,12 +104,10 @@ you integrate your implementation in our API.
 To make a contribution, just fork this repository, push the changes
 in your fork, open up an issue, and make a Pull Request!
 
-We're also available in Slack! Just go to our [slack group](https://scikit-ml.slack.com/).
-
 ## Cite
 
-If you used scikit-multilearn in your research or project, please
-cite [our work](https://arxiv.org/abs/1702.01460):
+If you used scikit-multilearn-ng in your research or project, please
+cite [the original package scikit-multilearn](https://arxiv.org/abs/1702.01460):
 
 ```bibtex
 @ARTICLE{2017arXiv170201460S,
