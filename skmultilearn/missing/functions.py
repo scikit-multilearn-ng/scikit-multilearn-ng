@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from numpy.linalg import inv
 
+
 def label_correlation(y, s):
     """Correlation between labels in a label matrix
 
@@ -9,7 +10,6 @@ def label_correlation(y, s):
     ----------
     y : array-like (n_labels, n_samples)
         Label matrix
-
     s : float
         Smoothness parameter
 
@@ -17,7 +17,6 @@ def label_correlation(y, s):
     -------
     L : array-like (n_labels, n_labels)
         Label correlation matrix
-
     """
     L = np.zeros(shape=[y.shape[0], y.shape[0]])
 
@@ -31,6 +30,7 @@ def label_correlation(y, s):
             L[i,j] = (coincidence + s)/(yi + 2*s)
     
     return L
+
 
 def estimate_mising_labels(y, L):
     """Estimation of the missing labels, using the correlation matrix
@@ -57,7 +57,7 @@ def estimate_mising_labels(y, L):
                 estimate_matrix[j,i] = aux
             else:
                 estimate_matrix[j,i] = 1
-    #Once we have the matrix, normalize the data
+    # Once we have the matrix, normalize the data
     estimate_matrix_copy = np.copy(estimate_matrix)
     for j in range(y.shape[0]):
         for i in range(y.shape[1]):
@@ -67,6 +67,7 @@ def estimate_mising_labels(y, L):
                     estimate_matrix[j,i] = aux
             
     return estimate_matrix
+
 
 def weight_adjacent_matrix(X, k):
     """Using the kNN algorithm we will use the clusters to get a weight matrix
@@ -98,6 +99,7 @@ def weight_adjacent_matrix(X, k):
 
     return W
 
+
 def diagonal_matrix_H(X, y):
     """Diagonal matrix that indicates if X is labeled
 
@@ -122,6 +124,7 @@ def diagonal_matrix_H(X, y):
 
     return H
 
+
 def diagonal_matrix_lambda(W):
     """
 
@@ -141,6 +144,7 @@ def diagonal_matrix_lambda(W):
     
     return diagonal_lambda
 
+
 def graph_laplacian_matrix(lambda_matrix, W):
     """
 
@@ -159,6 +163,7 @@ def graph_laplacian_matrix(lambda_matrix, W):
     M = np.zeros(shape=[W.shape[0], W.shape[1]])
     M = np.subtract(lambda_matrix, W)
     return M
+
 
 def diagonal_matrix_Hc(H):
     """
@@ -181,6 +186,7 @@ def diagonal_matrix_Hc(H):
     product = numerator/H.shape[0]
     Hc = np.subtract(H, product)
     return Hc
+
 
 def predictive_matrix(X, Hc, M, estimate_matrix, alpha):
     """Predictive matrix that works as the first item of the equation
@@ -212,6 +218,7 @@ def predictive_matrix(X, Hc, M, estimate_matrix, alpha):
     P = np.matmul(numerator, numerator2)
 
     return P
+
 
 def label_bias(estimate_matrix, P, X, H):
     """Label bias that works as the second item of the equation

@@ -30,7 +30,6 @@ class SmileTest(unittest.TestCase):
         self.assertEqual(correlation.shape[0], y.shape[0])
         self.assertEqual(correlation.shape[1], y.shape[0])
 
-    
     def test_estimate_missing_labels(self):
 
         X, y = make_multilabel_classification()
@@ -118,7 +117,6 @@ class SmileTest(unittest.TestCase):
         b = np.zeros(y.shape[1])
         b = label_bias(estimate_matrix, P, X, H)
         self.assertTrue(np.sum(b) != 0)
-
     
     def test_fit(self):
         smile = SMiLE()
@@ -126,7 +124,6 @@ class SmileTest(unittest.TestCase):
         smile.fit(X, y)
         self.assertTrue(np.sum(smile.P) != 0)
         self.assertTrue(np.sum(smile.b) != 0)
-
 
     def test_predict(self):
         smile = SMiLE()
@@ -150,6 +147,7 @@ class SmileTest(unittest.TestCase):
         self.assertEqual(s, 0.85)
         self.assertEqual(alpha, 0.17)
         self.assertEqual(k, 7)
+
 
 if __name__ == '__main__':
     unittest.main()
