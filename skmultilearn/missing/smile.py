@@ -43,6 +43,42 @@ class SMiLE:
     b : array-like (n_labels)
         Label bias as the second item of the equation
         b = ((estimate_matrix - Pt*X)*H*1)/N
+
+    References
+    ----------
+    If used, please cite the scikit-multilearn library and the relevant paper:
+
+    .. code-block:: bibtex
+
+        @article{TAN2017192,
+          title = {Semi-supervised multi-label classification using incomplete label information},
+          author = {Qiaoyu Tan and Yanming Yu and Guoxian Yu and Jun Wang},
+          journal = {Neurocomputing},
+          volume = {260},
+          pages = {192-202},
+          year = {2017},
+          issn = {0925-2312},
+          doi = {https://doi.org/10.1016/j.neucom.2017.04.033},
+          url = {https://www.sciencedirect.com/science/article/pii/S092523121730704X},
+        }
+    
+    Examples
+    --------
+    An example use case for SMiLE algorithm:
+
+    .. code-block:: python
+
+        from skmultilearn.missing import SMiLE
+
+        # initialize SMiLE algorithm with parameters
+        classifier = SMiLE(s=0.6, alpha=0.4, k=8)
+
+        # train
+        classifier.fit(X,y)
+
+        # predict
+        prediction = classifier.predict(X)
+
     """
 
     def __init__(self, s=0.5, alpha=0.35, k=5):
