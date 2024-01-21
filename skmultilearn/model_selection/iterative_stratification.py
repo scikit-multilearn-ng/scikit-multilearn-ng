@@ -27,7 +27,7 @@ You can use this class exactly the same way you would use a normal scikit KFold 
 
     from skmultilearn.model_selection import IterativeStratification
 
-    k_fold = IterativeStratification(n_splits=2, order=1):
+    k_fold = IterativeStratification(n_splits=2, order=1)
     for train, test in k_fold.split(X, y):
         classifier.fit(X[train], y[train])
         result = classifier.predict(X[test])

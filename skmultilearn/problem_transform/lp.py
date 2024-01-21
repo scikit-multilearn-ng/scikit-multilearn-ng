@@ -191,7 +191,7 @@ class LabelPowerset(ProblemTransformationBase):
         problem where each label combination is a separate class.
 
         Parameters
-        -----------
+        ----------
         y : `array_like`, :class:`numpy.matrix` or :mod:`scipy.sparse` matrix of `{0, 1}`, shape=(n_samples, n_labels)
             binary indicator matrix with label assignments
 
@@ -228,7 +228,7 @@ class LabelPowerset(ProblemTransformationBase):
         problem where each label combination is a separate class.
 
         Parameters
-        -----------
+        ----------
         y : numpy.ndarray of `{0, ... , n_classes-1}`, shape=(n_samples,)
             binary indicator matrix with label assignments
 
