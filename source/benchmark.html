@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Benchmark &#8212; scikit-multilearn-ng v0.0.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=e463f385"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="benchmark">
+<h1>Benchmark<a class="headerlink" href="#benchmark" title="Link to this heading">¶</a></h1>
+<p>In most cases scikit-multilearn-ng also operates faster than MEKA or MULAN, apart from the edge case of Binary Relevance classification of the mediamill data set.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/comparison.png"><img alt="../_images/comparison.png" src="../_images/comparison.png" style="width: 80%;" /></a>
+<figcaption>
+<p><span class="caption-text">Normalized (100% - worst median) user running time (s) and memory usage of scikit-multilearn, Meka and Mulan implementations for Binary Relevance and Label Powerset multi-label classifiers based on Random Forest.  The closer the library is to point 0, the better it performed, thus the smaller area inside the library curve, the better.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>The Figure presents the time and memory required to perform classification, including loading the ARFF data set and measuring errors, i.e. a complete classification use case scenario.</p>
+<p>As different data sets require different amount of time and memory we decided to normalize the charts. The results on the chart are normalized for each data set separately.</p>
+<p>Normalizion is calculated as follows: out of the median of every library’s time or memory perfomance the highest of the medians in the data is used as normalization point, i.e. 100% is the worst median performance.</p>
+<p>We present the best, median, and worst performance of each library per data set, normalized performance with the worst median performance on that data set.</p>
+<p>All the libraries were forced to use a single core using the <code class="docutils literal notranslate"><span class="pre">taskset</span></code> command to minimize parallelization effects on the comparison. Time and memory results were obtained using the <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">-v</span></code> command and represent User time, and Maximum resident set size respectively. All results taken into consideration reported that 100% of their CPU core had been assigned to the process which performed the classification scenario.</p>
+<p>We did not test algorithm adaptation methods as there are no algorithm adaptation methods present in all three libraries.</p>
+<p>To minimize the impact of base classifiers, we have decided to use a fast Random Forest base classifier with 10 trees.</p>
+<p>We have checked the classification quality and did not find significant differences between Hamming Loss, Jaccard and Accuracy scores between the outputs.</p>
+<hr class="docutils" />
+<p><strong>Cite us</strong></p>
+<p>If you use scikit-multilearn-ng in your research and publish it, please consider citing scikit-multilearn:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@ARTICLE</span><span class="p">{</span><span class="nl">2017arXiv170201460S</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{{Szyma{&#39;n}ski}, P. and {Kajdanowicz}, T.}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;{A scikit-based Python environment for performing multi-label classification}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{ArXiv e-prints}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">archivePrefix</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;arXiv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">eprint</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1702.01460}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">primaryClass</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;cs.LG&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">keywords</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Computer Science - Learning, Computer Science - Mathematical Software}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">2017</span><span class="p">,</span>
+<span class="w">    </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">feb</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="https://avatars.githubusercontent.com/u/153663050?s=200&amp;v=4" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">scikit-multilearn-ng</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=scikit-multilearn-ng&repo=scikit-multilearn-ng&type=star&count=True&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="py-modindex.html">Module Index</a></li>
+    
+    <li class="toctree-l1"><a href="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/">GitHub Repository</a></li>
+    
+    <li class="toctree-l1"><a href="source/license.html">License</a></li>
+    
+    <li class="toctree-l1"><a href="https://pypi.org/project/scikit-multilearn-ng/">PyPI</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      
+      
+      
+      <a href="../_sources/source/benchmark.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

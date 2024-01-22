@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>License &#8212; scikit-multilearn-ng v0.0.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=e463f385"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="license">
+<h1>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h1>
+<p>Scikit-multilearn-ng follows the widely employed copyleft licensing of the scikit
+community and is licensed BSD 2-Clause “Simplified” License. You can:</p>
+<ul class="simple">
+<li><p>Use, copy and distribute the unmodified source or binary forms of the licensed program</p></li>
+<li><p>Use, copy and distribute modified source or binary forms of the licensed program, provided that all distributed copies are accompanied by the license</p></li>
+</ul>
+<a class="btn" href="https://choosealicense.com/licenses/bsd-2-clause/">Learn mode</a><section id="gpl-library-dependency">
+<h2>GPL library dependency<a class="headerlink" href="#gpl-library-dependency" title="Link to this heading">¶</a></h2>
+<p>Some of the sub-functionalities of the library uses and depends on GPL-licensed libraries:</p>
+<ul class="simple">
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">skmultilearn.cluster.graphtool</span></code> depends on GPL licensed <a class="reference external" href="https://graph-tool.skewed.de/">python-graphtool</a> module for Stochastic Blockmodel functionality</p></li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">skmultilearn.cluster.igraph</span></code> depends on GPL licensed <a class="reference external" href="http://igraph.org/python/">python-igraph</a> module for community detection methods</p></li>
+</ul>
+<p>Using any of these modules incurs GPL on your codebase, thus for commercial purposes for network-based label space division
+you should be using the <code class="xref py py-mod docutils literal notranslate"><span class="pre">skmultilearn.cluster.networkx</span></code> module which is depends on the well known BSD-licensed liibrary <a class="reference external" href="https://networkx.github.io">NetworkX</a>.</p>
+<p>Note that none of these libraries are installed by default.</p>
+<hr class="docutils" />
+<p><strong>Cite us</strong></p>
+<p>If you use scikit-multilearn-ng in your research and publish it, please consider citing scikit-multilearn:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@ARTICLE</span><span class="p">{</span><span class="nl">2017arXiv170201460S</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{{Szyma{&#39;n}ski}, P. and {Kajdanowicz}, T.}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;{A scikit-based Python environment for performing multi-label classification}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{ArXiv e-prints}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">archivePrefix</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;arXiv&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">eprint</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{1702.01460}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">primaryClass</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;cs.LG&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">keywords</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Computer Science - Learning, Computer Science - Mathematical Software}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="m">2017</span><span class="p">,</span>
+<span class="w">    </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">feb</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="https://avatars.githubusercontent.com/u/153663050?s=200&amp;v=4" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">scikit-multilearn-ng</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=scikit-multilearn-ng&repo=scikit-multilearn-ng&type=star&count=True&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="genindex.html">Index</a></li>
+    
+    <li class="toctree-l1"><a href="py-modindex.html">Module Index</a></li>
+    
+    <li class="toctree-l1"><a href="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/">GitHub Repository</a></li>
+    
+    <li class="toctree-l1"><a href="source/license.html">License</a></li>
+    
+    <li class="toctree-l1"><a href="https://pypi.org/project/scikit-multilearn-ng/">PyPI</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      
+      
+      
+      <a href="../_sources/source/license.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
