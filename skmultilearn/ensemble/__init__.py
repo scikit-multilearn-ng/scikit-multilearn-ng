@@ -32,6 +32,5 @@ __all__ = [
     "RakelD",
     "RakelO",
     "LabelSpacePartitioningClassifier",
-    "LabelSpacePartitioningClassifier",
     "MajorityVotingClassifier",
 ]

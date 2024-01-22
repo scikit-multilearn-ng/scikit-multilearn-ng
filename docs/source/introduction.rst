@@ -1,4 +1,0 @@
-.. _introduction:
-
-Estimating parameters
-======================

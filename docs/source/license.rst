@@ -1,7 +1,7 @@
 License
 -------
 
-Scikit-multilearn follows the widely employed copyleft licensing of the scikit
+Scikit-multilearn-ng follows the widely employed copyleft licensing of the scikit
 community and is licensed BSD 2-Clause "Simplified" License. You can:
 
 - Use, copy and distribute the unmodified source or binary forms of the licensed program
