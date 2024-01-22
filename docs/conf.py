@@ -73,4 +73,8 @@ html_short_title = 'scikit-multilearn-ng'
 html_show_copyright = False
 html_show_sphinx = False
 html_logo = "https://avatars.githubusercontent.com/u/153663050?s=200&v=4"
+html_meta = {
+    'description': 'scikit-multilearn-ng is an advanced Python module for multi-label and multi-target machine learning, extending scikit-learn.',
+    'keywords': 'multi-label learning, machine learning, python, scikit-learn, classification, scikit-multilearn, scikit-multilearn-ng, multi-target learning',
+}
 
