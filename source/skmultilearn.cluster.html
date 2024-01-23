@@ -30,8 +30,489 @@
 
           <div class="body" role="main">
             
-  <section id="skmultilearn-cluster-package">
-<h1>skmultilearn.cluster package<a class="headerlink" href="#skmultilearn-cluster-package" title="Link to this heading">¶</a></h1>
+  <section id="module-skmultilearn.cluster">
+<span id="skmultilearn-cluster-package"></span><h1>skmultilearn.cluster package<a class="headerlink" href="#module-skmultilearn.cluster" title="Link to this heading">¶</a></h1>
+<p>The <a class="reference internal" href="#module-skmultilearn.cluster" title="skmultilearn.cluster"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skmultilearn.cluster</span></code></a> module gathers label space clustering methods.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#skmultilearn.cluster.FixedLabelSpaceClusterer" title="skmultilearn.cluster.FixedLabelSpaceClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedLabelSpaceClusterer</span></code></a></p></td>
+<td><p>Return a predefined fixed clustering, usually driven by
+expert knowledge</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skmultilearn.cluster.MatrixLabelSpaceClusterer" title="skmultilearn.cluster.MatrixLabelSpaceClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixLabelSpaceClusterer</span></code></a></p></td>
+<td><p>Cluster the label space using a scikit-compatible
+matrix-based clusterer</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">GraphToolLabelGraphClusterer</span></code></p></td>
+<td><p>Fits a Stochastic Block Model to the Label Graph and
+infers the communities</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">StochasticBlockModel</span></code></p></td>
+<td><p>A Stochastic Blockmodel class</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skmultilearn.cluster.IGraphLabelGraphClusterer" title="skmultilearn.cluster.IGraphLabelGraphClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">IGraphLabelGraphClusterer</span></code></a></p></td>
+<td><p>Clusters label space using igraph community detection</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skmultilearn.cluster.RandomLabelSpaceClusterer" title="skmultilearn.cluster.RandomLabelSpaceClusterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomLabelSpaceClusterer</span></code></a></p></td>
+<td><p>Randomly divides label space into equally-sized clusters</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NetworkXLabelGraphClusterer</span></code></p></td>
+<td><p>Cluster label space with NetworkX community detection</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.cluster.FixedLabelSpaceClusterer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.cluster.</span></span><span class="sig-name descname"><span class="pre">FixedLabelSpaceClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clusters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.FixedLabelSpaceClusterer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LabelSpaceClustererBase</span></code></p>
+<p>Return a fixed label space partition</p>
+<p>This clusterer takes a predefined fixed <code class="docutils literal notranslate"><span class="pre">clustering</span></code> of the label space and returns it in fit_predict as the label
+space division. This is useful for employing expert knowledge about label space division or partitions in ensemble
+classifiers such as: <a class="reference internal" href="skmultilearn.ensemble.html#skmultilearn.ensemble.LabelSpacePartitioningClassifier" title="skmultilearn.ensemble.LabelSpacePartitioningClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">LabelSpacePartitioningClassifier</span></code></a> or
+<a class="reference internal" href="skmultilearn.ensemble.html#skmultilearn.ensemble.MajorityVotingClassifier" title="skmultilearn.ensemble.MajorityVotingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">MajorityVotingClassifier</span></code></a>.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>clusters<span class="classifier">array of arrays of int</span></dt><dd><p>provided partition of the label space in the for of numpy array of
+numpy arrays of indexes for each partition, ex. <code class="docutils literal notranslate"><span class="pre">[[0,1],[2,3]]</span></code></p>
+</dd>
+</dl>
+<p>An example use of the fixed clusterer with a label partitioning classifier to train randomforests for a set of
+subproblems defined upon expert knowledge:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.ensemble</span> <span class="kn">import</span> <span class="n">LabelSpacePartitioningClassifier</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.cluster</span> <span class="kn">import</span> <span class="n">FixedLabelSpaceClusterer</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.problem_transform</span> <span class="kn">import</span> <span class="n">LabelPowerset</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">LabelSpacePartitioningClassifier</span><span class="p">(</span>
+    <span class="n">classifier</span> <span class="o">=</span> <span class="n">LabelPowerset</span><span class="p">(</span>
+        <span class="n">classifier</span><span class="o">=</span><span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+        <span class="n">require_dense</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+    <span class="p">),</span>
+    <span class="n">require_dense</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+    <span class="n">clusterer</span> <span class="o">=</span> <span class="n">FixedLabelSpaceClusterer</span><span class="p">(</span><span class="n">clustering</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.cluster.FixedLabelSpaceClusterer.fit_predict">
+<span class="sig-name descname"><span class="pre">fit_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.FixedLabelSpaceClusterer.fit_predict" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the provided label space division</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">None</span></dt><dd><p>currently unused, left for scikit compatibility</p>
+</dd>
+<dt>y<span class="classifier">scipy.sparse</span></dt><dd><p>label space of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>arrray of arrays of label indexes (numpy.ndarray)</dt><dd><p>label space division, each sublist represents labels that are in that community</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.cluster.IGraphLabelGraphClusterer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.cluster.</span></span><span class="sig-name descname"><span class="pre">IGraphLabelGraphClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph_builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.IGraphLabelGraphClusterer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LabelGraphClustererBase</span></code></p>
+<p>Clusters the label space using igraph community detection methods</p>
+<p>This clusterer constructs an igraph representation of the Label Graph generated by graph builder and detects
+communities in it using community detection methods from the igraph library. Detected communities are converted to
+a label space clustering. The approach has been described in <a class="reference external" href="http://www.mdpi.com/1099-4300/18/8/282/htm">this paper concerning data-driven label space division</a>.</p>
+<section id="id2">
+<h2>Parameters<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>graph_builder: a GraphBuilderBase inherited transformer</dt><dd><p>the graph builder to provide the adjacency matrix and weight map for the underlying graph</p>
+</dd>
+<dt>method: string</dt><dd><p>the community detection method to use, this clusterer supports the following community detection methods:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method name string</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="http://igraph.org/python/doc/igraph.Graph-class.html#community_fastgreedy">fastgreedy</a></p></td>
+<td><p>Detecting communities with largest modularity using incremental greedy search</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://igraph.org/python/doc/igraph.Graph-class.html#community_infomap">infomap</a></p></td>
+<td><p>Detecting communities through information flow compressing simulated via random walks</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="http://igraph.org/python/doc/igraph.Graph-class.html#community_label_propagation">label_propagation</a></p></td>
+<td><p>Detecting communities from colorings via multiple label propagation on the graph</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://igraph.org/python/doc/igraph.Graph-class.html#community_leading_eigenvector">leading_eigenvector</a></p></td>
+<td><p>Detecting communities with largest modularity through adjacency matrix eigenvectors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="http://igraph.org/python/doc/igraph.Graph-class.html#community_multilevel">multilevel</a></p></td>
+<td><p>Recursive communitiy detection with largest modularity step by step maximization</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://igraph.org/python/doc/igraph.Graph-class.html#community_walktrap">walktrap</a></p></td>
+<td><p>Finding communities by trapping many random walks</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><a href="#id17"><span class="problematic" id="id18">graph_</span></a><span class="classifier">igraph.Graph</span></dt><dd><p>the igraph Graph object containing the graph representation of graph builder’s adjacency matrix and weights</p>
+</dd>
+<dt><a href="#id19"><span class="problematic" id="id20">weights_</span></a><span class="classifier">{ ‘weight’</span><span class="classifier">list of values in edge order of graph edges }</span></dt><dd><p>edge weights stored in a format recognizable by the igraph module</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This clusterer is GPL-licenced and will taint your code with GPL restrictions.</p>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>If you use this clusterer please cite the igraph paper and the clustering paper:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@Article<span class="nb">{</span>igraph,
+    title = <span class="nb">{</span>The igraph software package for complex network research<span class="nb">}</span>,
+    author = <span class="nb">{</span>Gabor Csardi and Tamas Nepusz<span class="nb">}</span>,
+    journal = <span class="nb">{</span>InterJournal<span class="nb">}</span>,
+    volume = <span class="nb">{</span>Complex Systems<span class="nb">}</span>,
+    pages = <span class="nb">{</span>1695<span class="nb">}</span>,
+    year = <span class="nb">{</span>2006<span class="nb">}</span>,
+    url = <span class="nb">{</span>http://igraph.org<span class="nb">}</span>,
+<span class="nb">}</span>
+
+@Article<span class="nb">{</span>datadriven,
+    author = <span class="nb">{</span>Szymański, Piotr and Kajdanowicz, Tomasz and Kersting, Kristian<span class="nb">}</span>,
+    title = <span class="nb">{</span>How Is a Data-Driven Approach Better than Random Choice in
+    Label Space Division for Multi-Label Classification?<span class="nb">}</span>,
+    journal = <span class="nb">{</span>Entropy<span class="nb">}</span>,
+    volume = <span class="nb">{</span>18<span class="nb">}</span>,
+    year = <span class="nb">{</span>2016<span class="nb">}</span>,
+    number = <span class="nb">{</span>8<span class="nb">}</span>,
+    article<span class="nb">_</span>number = <span class="nb">{</span>282<span class="nb">}</span>,
+    url = <span class="nb">{</span>http://www.mdpi.com/1099-4300/18/8/282<span class="nb">}</span>,
+    issn = <span class="nb">{</span>1099-4300<span class="nb">}</span>,
+    doi = <span class="nb">{</span>10.3390/e18080282<span class="nb">}</span>
+<span class="nb">}</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<p>An example code for using this clusterer with a classifier looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.problem_transform</span> <span class="kn">import</span> <span class="n">LabelPowerset</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.cluster</span> <span class="kn">import</span> <span class="n">IGraphLabelGraphClusterer</span><span class="p">,</span> <span class="n">LabelCooccurrenceGraphBuilder</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.ensemble</span> <span class="kn">import</span> <span class="n">LabelSpacePartitioningClassifier</span>
+
+<span class="c1"># construct base forest classifier</span>
+<span class="n">base_classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># construct a graph builder that will include</span>
+<span class="c1"># label relations weighted by how many times they</span>
+<span class="c1"># co-occurred in the data, without self-edges</span>
+<span class="n">graph_builder</span> <span class="o">=</span> <span class="n">LabelCooccurrenceGraphBuilder</span><span class="p">(</span>
+    <span class="n">weighted</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_self_edges</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># setup problem transformation approach with sparse matrices for random forest</span>
+<span class="n">problem_transform_classifier</span> <span class="o">=</span> <span class="n">LabelPowerset</span><span class="p">(</span><span class="n">classifier</span><span class="o">=</span><span class="n">base_classifier</span><span class="p">,</span>
+    <span class="n">require_dense</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+
+<span class="c1"># setup the clusterer to use, we selected the fast greedy modularity-maximization approach</span>
+<span class="n">clusterer</span> <span class="o">=</span> <span class="n">IGraphLabelGraphClusterer</span><span class="p">(</span><span class="n">graph_builder</span><span class="o">=</span><span class="n">graph_builder</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fastgreedy&#39;</span><span class="p">)</span>
+
+<span class="c1"># setup the ensemble metaclassifier</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">LabelSpacePartitioningClassifier</span><span class="p">(</span><span class="n">problem_transform_classifier</span><span class="p">,</span> <span class="n">clusterer</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For more use cases see <a class="reference external" href="../labelrelations.ipynb">the label relations exploration guide</a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.cluster.IGraphLabelGraphClusterer.fit_predict">
+<span class="sig-name descname"><span class="pre">fit_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.IGraphLabelGraphClusterer.fit_predict" title="Link to this definition">¶</a></dt>
+<dd><p>Performs clustering on y and returns list of label lists</p>
+<p>Builds a label graph using the provided graph builder’s <cite>transform</cite> method
+on <cite>y</cite> and then detects communities using the selected <cite>method</cite>.</p>
+<p>Sets <code class="code docutils literal notranslate"><span class="pre">self.weights_</span></code> and <code class="code docutils literal notranslate"><span class="pre">self.graph_</span></code>.</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">None</span></dt><dd><p>currently unused, left for scikit compatibility</p>
+</dd>
+<dt>y<span class="classifier">scipy.sparse</span></dt><dd><p>label space of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h3>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>arrray of arrays of label indexes (numpy.ndarray)</dt><dd><p>label space division, each sublist represents labels that are in that community</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.cluster.LabelCooccurrenceGraphBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.cluster.</span></span><span class="sig-name descname"><span class="pre">LabelCooccurrenceGraphBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weighted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_self_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_self_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.LabelCooccurrenceGraphBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">GraphBuilderBase</span></code></p>
+<p>Base class providing API and common functions for all label
+co-occurence based multi-label classifiers.</p>
+<p>This graph builder constructs a Label Graph based on the output matrix where two label nodes are connected
+when at least one sample is labeled with both of them. If the graph is weighted, the weight of an edge between two
+label nodes is the number of samples labeled with these two labels. Self-edge weights contain the number of samples
+with a given label.</p>
+<section id="id5">
+<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>weighted: bool</dt><dd><p>decide whether to generate a weighted or unweighted graph.</p>
+</dd>
+<dt>include_self_edges<span class="classifier">bool</span></dt><dd><p>decide whether to include self-edge i.e. label 1 - label 1 in
+co-occurrence graph</p>
+</dd>
+<dt>normalize_self_edges: bool</dt><dd><p>if including self edges, divide the (i, i) edge by 2.0, requires include_self_edges=True</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h2>References<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<p>If you use this graph builder please cite the clustering paper:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@Article<span class="nb">{</span>datadriven,
+    author = <span class="nb">{</span>Szymański, Piotr and Kajdanowicz, Tomasz and Kersting, Kristian<span class="nb">}</span>,
+    title = <span class="nb">{</span>How Is a Data-Driven Approach Better than Random Choice in
+    Label Space Division for Multi-Label Classification?<span class="nb">}</span>,
+    journal = <span class="nb">{</span>Entropy<span class="nb">}</span>,
+    volume = <span class="nb">{</span>18<span class="nb">}</span>,
+    year = <span class="nb">{</span>2016<span class="nb">}</span>,
+    number = <span class="nb">{</span>8<span class="nb">}</span>,
+    article<span class="nb">_</span>number = <span class="nb">{</span>282<span class="nb">}</span>,
+    url = <span class="nb">{</span>http://www.mdpi.com/1099-4300/18/8/282<span class="nb">}</span>,
+    issn = <span class="nb">{</span>1099-4300<span class="nb">}</span>,
+    doi = <span class="nb">{</span>10.3390/e18080282<span class="nb">}</span>
+<span class="nb">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h2>Examples<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<p>A full example of building a modularity-based label space division based on the Label Co-occurrence Graph and
+classifying with a separate classifier chain per subspace.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.cluster</span> <span class="kn">import</span> <span class="n">LabelCooccurrenceGraphBuilder</span><span class="p">,</span> <span class="n">NetworkXLabelGraphClusterer</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.ensemble</span> <span class="kn">import</span> <span class="n">LabelSpacePartitioningClassifier</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.problem_transform</span> <span class="kn">import</span> <span class="n">ClassifierChain</span>
+<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+
+<span class="n">graph_builder</span> <span class="o">=</span> <span class="n">LabelCooccurrenceGraphBuilder</span><span class="p">(</span><span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_self_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">normalize_self_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">clusterer</span> <span class="o">=</span> <span class="n">NetworkXLabelGraphClusterer</span><span class="p">(</span><span class="n">graph_builder</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;louvain&#39;</span><span class="p">)</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">LabelSpacePartitioningClassifier</span><span class="p">(</span>
+    <span class="n">classifier</span> <span class="o">=</span> <span class="n">ClassifierChain</span><span class="p">(</span><span class="n">classifier</span><span class="o">=</span><span class="n">GaussianNB</span><span class="p">()),</span>
+    <span class="n">clusterer</span> <span class="o">=</span> <span class="n">clusterer</span>
+<span class="p">)</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For more use cases see <a class="reference external" href="../labelrelations.ipynb">the label relations exploration guide</a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.cluster.LabelCooccurrenceGraphBuilder.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.LabelCooccurrenceGraphBuilder.transform" title="Link to this definition">¶</a></dt>
+<dd><p>Generate adjacency matrix from label matrix</p>
+<p>This function generates a weighted or unweighted co-occurence Label Graph adjacency matrix in dictionary of keys
+format based on input binary label vectors</p>
+<section id="id9">
+<h3>Parameters<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>y<span class="classifier">numpy.ndarray or scipy.sparse</span></dt><dd><p>dense or sparse binary matrix with shape
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Dict[(int, int), float]</dt><dd><p>weight map with a tuple of label indexes as keys and a the number of samples in which the two co-occurred</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.cluster.MatrixLabelSpaceClusterer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.cluster.</span></span><span class="sig-name descname"><span class="pre">MatrixLabelSpaceClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clusterer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_input_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.MatrixLabelSpaceClusterer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LabelSpaceClustererBase</span></code></p>
+<p>Cluster the label space using a scikit-compatible matrix-based clusterer</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>clusterer<span class="classifier">sklearn.base.ClusterMixin</span></dt><dd><p>a clonable instance of a scikit-compatible clusterer, will be automatically
+put under <code class="code docutils literal notranslate"><span class="pre">self.clusterer</span></code>.</p>
+</dd>
+<dt>pass_input_space<span class="classifier">bool (default is False)</span></dt><dd><p>whether to take <code class="code docutils literal notranslate"><span class="pre">X</span></code> into consideration upon clustering,
+use only if you know that the clusterer can handle two
+parameters for clustering, will be automatically
+put under <code class="code docutils literal notranslate"><span class="pre">self.pass_input_space</span></code>.</p>
+</dd>
+</dl>
+<p>Example code for using this clusterer looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.problem_transform</span> <span class="kn">import</span> <span class="n">LabelPowerset</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.cluster</span> <span class="kn">import</span> <span class="n">MatrixLabelSpaceClusterer</span>
+<span class="kn">from</span> <span class="nn">skmultilearn.ensemble</span> <span class="kn">import</span> <span class="n">LabelSpacePartitioningClassifier</span>
+
+<span class="c1"># construct base forest classifier</span>
+<span class="n">base_classifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">1030</span><span class="p">)</span>
+
+<span class="c1"># setup problem transformation approach with sparse matrices for random forest</span>
+<span class="n">problem_transform_classifier</span> <span class="o">=</span> <span class="n">LabelPowerset</span><span class="p">(</span><span class="n">classifier</span><span class="o">=</span><span class="n">base_classifier</span><span class="p">,</span>
+    <span class="n">require_dense</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+
+<span class="c1"># setup the clusterer</span>
+<span class="n">clusterer</span> <span class="o">=</span> <span class="n">MatrixLabelSpaceClusterer</span><span class="p">(</span><span class="n">clusterer</span><span class="o">=</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># setup the ensemble metaclassifier</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">LabelSpacePartitioningClassifier</span><span class="p">(</span><span class="n">problem_transform_classifier</span><span class="p">,</span> <span class="n">clusterer</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.cluster.MatrixLabelSpaceClusterer.fit_predict">
+<span class="sig-name descname"><span class="pre">fit_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.MatrixLabelSpaceClusterer.fit_predict" title="Link to this definition">¶</a></dt>
+<dd><p>Clusters the output space</p>
+<p>The clusterer’s <code class="code docutils literal notranslate"><span class="pre">fit_predict</span></code> method is executed
+on either X and y.T vectors (if <code class="code docutils literal notranslate"><span class="pre">self.pass_input_space</span></code> is true)
+or just y.T to detect clusters of labels.</p>
+<p>The transposition of label space is used to align with
+the format expected by scikit-learn classifiers, i.e. we cluster
+labels with label assignment vectors as samples.</p>
+<section id="id12">
+<h3>Returns<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>arrray of arrays of label indexes (numpy.ndarray)</dt><dd><p>label space division, each sublist represents labels that are in that community</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.cluster.RandomLabelSpaceClusterer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.cluster.</span></span><span class="sig-name descname"><span class="pre">RandomLabelSpaceClusterer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_overlap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.RandomLabelSpaceClusterer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LabelSpaceClustererBase</span></code></p>
+<p>Randomly divides the label space into equally-sized clusters</p>
+<p>This method divides the label space by drawing without replacement a desired number of
+equally sized subsets of label space, in a partitioning or overlapping scheme.</p>
+<section id="id13">
+<h2>Parameters<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>cluster_size<span class="classifier">int</span></dt><dd><p>desired size of a single cluster, will be automatically
+put under <code class="code docutils literal notranslate"><span class="pre">self.cluster_size</span></code>.</p>
+</dd>
+<dt>cluster_count: int</dt><dd><p>number of clusters to divide into, will be automatically
+put under <code class="code docutils literal notranslate"><span class="pre">self.cluster_count</span></code>.</p>
+</dd>
+<dt>allow_overlap<span class="classifier">bool</span></dt><dd><p>whether to allow overlapping clusters or not, will be automatically
+put under <code class="code docutils literal notranslate"><span class="pre">self.allow_overlap</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h2>Examples<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<p>The following code performs random label space partitioning.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.cluster</span> <span class="kn">import</span> <span class="n">RandomLabelSpaceClusterer</span>
+
+<span class="c1"># assume X,y contain the data, example y contains 5 labels</span>
+<span class="n">cluster_count</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">cluster_size</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="n">cluster_count</span> <span class="c1"># == 2</span>
+<span class="n">clr</span> <span class="o">=</span> <span class="n">RandomLabelSpaceClusterer</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">,</span> <span class="n">cluster_count</span><span class="p">,</span> <span class="n">allow_overlap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="c1"># Result:</span>
+<span class="c1"># array([list([0, 4]), list([2, 3]), list([1])], dtype=object)</span>
+</pre></div>
+</div>
+<p>Note that the leftover labels that did not fit in <cite>cluster_size</cite> x <cite>cluster_count</cite> classifiers will be appended
+to an additional last cluster of size at most <cite>cluster_size</cite> - 1.</p>
+<p>You can also use this class to get a random division of the label space, even with multiple overlaps:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.cluster</span> <span class="kn">import</span> <span class="n">RandomLabelSpaceClusterer</span>
+
+<span class="n">cluster_size</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">cluster_count</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">clr</span> <span class="o">=</span> <span class="n">RandomLabelSpaceClusterer</span><span class="p">(</span><span class="n">cluster_size</span><span class="p">,</span> <span class="n">cluster_count</span><span class="p">,</span> <span class="n">allow_overlap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Result</span>
+<span class="c1"># array([[2, 1, 3],</span>
+<span class="c1">#        [3, 0, 4],</span>
+<span class="c1">#        [2, 3, 1],</span>
+<span class="c1">#        [2, 3, 4],</span>
+<span class="c1">#        [3, 4, 0],</span>
+<span class="c1">#        [3, 0, 2]])</span>
+</pre></div>
+</div>
+<p>Note that you will never get the same label subset twice.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.cluster.RandomLabelSpaceClusterer.fit_predict">
+<span class="sig-name descname"><span class="pre">fit_predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.cluster.RandomLabelSpaceClusterer.fit_predict" title="Link to this definition">¶</a></dt>
+<dd><p>Cluster the output space</p>
+<section id="id15">
+<h3>Parameters<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<p>X : currently unused, left for scikit compatibility
+y : scipy.sparse</p>
+<blockquote>
+<div><p>label space of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</div></blockquote>
+</section>
+<section id="id16">
+<h3>Returns<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>arrray of arrays of label indexes (numpy.ndarray)</dt><dd><p>label space division, each sublist represents labels that are in that community</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 <hr class="docutils" />
 <p><strong>Cite us</strong></p>
 <p>If you use scikit-multilearn-ng in your research and publish it, please consider citing scikit-multilearn:</p>
@@ -82,9 +563,9 @@
 <hr />
 <ul>
     
-    <li class="toctree-l1"><a href="genindex.html">Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/genindex.html">Index</a></li>
     
-    <li class="toctree-l1"><a href="py-modindex.html">Module Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/py-modindex.html">Module Index</a></li>
     
     <li class="toctree-l1"><a href="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/">GitHub Repository</a></li>
     

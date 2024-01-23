@@ -30,8 +30,185 @@
 
           <div class="body" role="main">
             
-  <section id="skmultilearn-missing-package">
-<h1>skmultilearn.missing package<a class="headerlink" href="#skmultilearn-missing-package" title="Link to this heading">¶</a></h1>
+  <section id="module-skmultilearn.missing">
+<span id="skmultilearn-missing-package"></span><h1>skmultilearn.missing package<a class="headerlink" href="#module-skmultilearn.missing" title="Link to this heading">¶</a></h1>
+<p>The <cite>skmultilearn.missing</cite> module provides classifiers and methods 
+for dealing with missing labels in multi-label classification problems.</p>
+<p>Currently the following algorithm adaptation classification schemes are available in scikit-multilearn:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Classifier</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#skmultilearn.missing.SMiLE" title="skmultilearn.missing.SMiLE"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMiLE</span></code></a></p></td>
+<td><p>Semi-supervised multi-label classification using incomplete label information.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.missing.SMiLE">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.missing.</span></span><span class="sig-name descname"><span class="pre">SMiLE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.missing.SMiLE" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>SMiLE algorithm for multi label with missing labels
+(Semi-supervised multi-label classification using incomplete label information)</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>s<span class="classifier">float, optional, default</span><span class="classifier">0.5</span></dt><dd><p>Smoothness parameter for class imbalance</p>
+</dd>
+<dt>alpha<span class="classifier">float, optional, default</span><span class="classifier">0.35</span></dt><dd><p>Smoothness assumption parameter, ensures similar instances
+having similar predicted output. This parameter balances the
+importance of the two terms of the equation to optimize</p>
+</dd>
+<dt>k<span class="classifier">int, optional, default</span><span class="classifier">5</span></dt><dd><p>Neighbours parameter for clustering during the algorithm.
+It will indicate the number of clusters we want to create
+for the k nearest neighbor (kNN)</p>
+</dd>
+</dl>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>L<span class="classifier">array, [n_labels, n_labels]</span></dt><dd><p>Correlation matrix between labels</p>
+</dd>
+<dt>W<span class="classifier">array, [n_samples, n_samples]</span></dt><dd><p>Weighted matrix created by kNN for instances</p>
+</dd>
+<dt>estimate_matrix<span class="classifier">array-like (n_samples, n_labels)</span></dt><dd><p>Label estimation matrix
+y~ic = yiT * L(.,c) if yic == 0
+y~ic = 1 otherwise</p>
+</dd>
+<dt>H<span class="classifier">array-like (n_samples, n_samples)</span></dt><dd><p>Diagonal matrix indicating if an element of X is labeled or not</p>
+</dd>
+<dt>diagonal_lambda<span class="classifier">array-like (n_samples, n_samples)</span></dt><dd><p>Diagonal matrix having the sum of weights of the weighted matrix</p>
+</dd>
+<dt>M<span class="classifier">array-like (n_samples, n_samples)</span></dt><dd><p>Graph laplacian matrix</p>
+</dd>
+<dt>Hc<span class="classifier">array-like (n_samples, n_samples)</span></dt><dd><p>Hc = H - (H*1*1t*Ht)/(N)</p>
+</dd>
+<dt>P<span class="classifier">array-like (n_features, n_labels)</span></dt><dd><p>P = (X*Hc*Xt + alpha*X*M*Xt)-1 * X*Hc*YPred
+R = dxc</p>
+</dd>
+<dt>b<span class="classifier">array-like (n_labels)</span></dt><dd><p>Label bias as the second item of the equation
+b = ((estimate_matrix - Pt*X)*H*1)/N</p>
+</dd>
+</dl>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>If used, please cite the scikit-multilearn library and the relevant paper:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">TAN2017192</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Semi-supervised multi-label classification using incomplete label information}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Qiaoyu Tan and Yanming Yu and Guoxian Yu and Jun Wang}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">journal</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Neurocomputing}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{260}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pages</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{192-202}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2017}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">issn</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{0925-2312}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">doi</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://doi.org/10.1016/j.neucom.2017.04.033}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">url</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{https://www.sciencedirect.com/science/article/pii/S092523121730704X}</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<p>An example use case for SMiLE algorithm:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.missing</span> <span class="kn">import</span> <span class="n">SMiLE</span>
+
+<span class="c1"># initialize SMiLE algorithm with parameters</span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">SMiLE</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.missing.SMiLE.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.missing.SMiLE.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fits the model to training data</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">array-like or sparse matrix, shape=(n_samples, n_features)</span></dt><dd><p>Training instances.</p>
+</dd>
+<dt>y<span class="classifier">array-like, shape=(n_samples, n_labels)</span></dt><dd><p>Training labels.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.missing.SMiLE.getParams">
+<span class="sig-name descname"><span class="pre">getParams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.missing.SMiLE.getParams" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the parameters of this model</p>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>s<span class="classifier">float, optional, default</span><span class="classifier">0.5</span></dt><dd><p>Smoothness parameter for class imbalance</p>
+</dd>
+<dt>alpha<span class="classifier">float, optional, default</span><span class="classifier">0.35</span></dt><dd><p>Smoothness assumption parameter, ensures similar instances
+having similar predicted output. This parameter balances the
+importance of the two terms of the equation to optimize</p>
+</dd>
+<dt>k<span class="classifier">int, optional, default</span><span class="classifier">5</span></dt><dd><p>Neighbours parameter for clustering during the algorithm.
+It will indicate the number of clusters we want to create
+for the k nearest neighbor (kNN)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.missing.SMiLE.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.missing.SMiLE.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Predicts using the model</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">array-like or sparse matrix, shape=(n_samples, n_features)</span></dt><dd><p>Test instances.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Returns<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>predictions<span class="classifier">array-like, shape=(n_labels, n_samples)</span></dt><dd><p>Label predictions for the test instances. (As if it was a regression problem range[0,1])</p>
+</dd>
+<dt>predictionsNormalized<span class="classifier">array-like, shape=(n_labels, n_samples)</span></dt><dd><p>Label predictions</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.missing.SMiLE.setParams">
+<span class="sig-name descname"><span class="pre">setParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.missing.SMiLE.setParams" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the parameters of this model</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>s<span class="classifier">float, optional, default</span><span class="classifier">0.5</span></dt><dd><p>Smoothness parameter for class imbalance</p>
+</dd>
+<dt>alpha<span class="classifier">float, optional, default</span><span class="classifier">0.35</span></dt><dd><p>Smoothness assumption parameter, ensures similar instances
+having similar predicted output. This parameter balances the
+importance of the two terms of the equation to optimize</p>
+</dd>
+<dt>k<span class="classifier">int, optional, default</span><span class="classifier">5</span></dt><dd><p>Neighbours parameter for clustering during the algorithm.
+It will indicate the number of clusters we want to create
+for the k nearest neighbor (kNN)</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 <hr class="docutils" />
 <p><strong>Cite us</strong></p>
 <p>If you use scikit-multilearn-ng in your research and publish it, please consider citing scikit-multilearn:</p>
@@ -82,9 +259,9 @@
 <hr />
 <ul>
     
-    <li class="toctree-l1"><a href="genindex.html">Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/genindex.html">Index</a></li>
     
-    <li class="toctree-l1"><a href="py-modindex.html">Module Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/py-modindex.html">Module Index</a></li>
     
     <li class="toctree-l1"><a href="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/">GitHub Repository</a></li>
     

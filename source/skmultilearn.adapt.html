@@ -30,8 +30,794 @@
 
           <div class="body" role="main">
             
-  <section id="skmultilearn-adapt-package">
-<h1>skmultilearn.adapt package<a class="headerlink" href="#skmultilearn-adapt-package" title="Link to this heading">¶</a></h1>
+  <section id="module-skmultilearn.adapt">
+<span id="skmultilearn-adapt-package"></span><h1>skmultilearn.adapt package<a class="headerlink" href="#module-skmultilearn.adapt" title="Link to this heading">¶</a></h1>
+<p>The <a class="reference internal" href="#module-skmultilearn.adapt" title="skmultilearn.adapt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skmultilearn.adapt</span></code></a> module implements algorithm
+adaptation approaches to multi-label classification.</p>
+<p>Algorithm adaptation methods for multi-label classification 
+concentrate on adapting single-label classification algorithms
+to the multi-label case usually by changes in cost/decision 
+functions.</p>
+<p>Currently the following algorithm adaptation classification schemes are available in scikit-multilearn:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Classifier</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#skmultilearn.adapt.BRkNNaClassifier" title="skmultilearn.adapt.BRkNNaClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">BRkNNaClassifier</span></code></a></p></td>
+<td><p>a Binary Relevance kNN classifier that assigns a label
+if at least half of the neighbors are also classified
+with the label</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skmultilearn.adapt.BRkNNbClassifier" title="skmultilearn.adapt.BRkNNbClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">BRkNNbClassifier</span></code></a></p></td>
+<td><p>a Binary Relevance kNN classifier that assigns top m
+labels of neighbors with m - average number of labels
+assigned to neighbors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skmultilearn.adapt.MLkNN" title="skmultilearn.adapt.MLkNN"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLkNN</span></code></a></p></td>
+<td><p>a multi-label adapted kNN classifier with bayesian prior
+corrections</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skmultilearn.adapt.MLARAM" title="skmultilearn.adapt.MLARAM"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLARAM</span></code></a></p></td>
+<td><p>a multi-Label Hierarchical ARAM Neural Network</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skmultilearn.adapt.MLTSVM" title="skmultilearn.adapt.MLTSVM"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLTSVM</span></code></a></p></td>
+<td><p>twin multi-Label Support Vector Machines</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.adapt.BRkNNaClassifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.adapt.</span></span><span class="sig-name descname"><span class="pre">BRkNNaClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.BRkNNaClassifier" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BinaryRelevanceKNN</span></code></p>
+<p>Binary Relevance multi-label classifier based on k-Nearest Neighbors method.</p>
+<p>This version of the classifier assigns the labels that are assigned
+to at least half of the neighbors.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>k<span class="classifier">int</span></dt><dd><p>number of neighbours</p>
+</dd>
+</dl>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><a href="#id41"><span class="problematic" id="id42">knn_</span></a><span class="classifier">an instance of sklearn.NearestNeighbors</span></dt><dd><p>the nearest neighbors single-label classifier used underneath</p>
+</dd>
+<dt><a href="#id43"><span class="problematic" id="id44">neighbors_</span></a><span class="classifier">array of arrays of int, shape = (n_samples, k)</span></dt><dd><p>k neighbors of each sample</p>
+</dd>
+<dt><a href="#id45"><span class="problematic" id="id46">confidences_</span></a><span class="classifier">matrix of int, shape = (n_samples, n_labels)</span></dt><dd><p>label assignment confidences</p>
+</dd>
+</dl>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>If you use this method please cite the relevant paper:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">EleftheriosSpyromitros2008</span><span class="p">,</span>
+<span class="w">   </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{An Empirical Study of Lazy Multilabel Classification Algorithms}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2008}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">location</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Syros, Greece}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<p>Here’s a very simple example of using BRkNNaClassifier with a fixed number of neighbors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">BRkNNaClassifier</span>
+
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">BRkNNaClassifier</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use <code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code> to find an optimal set of parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">BRkNNaClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)}</span>
+<span class="n">score</span> <span class="o">=</span> <span class="s1">&#39;f1_macro&#39;</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">BRkNNaClassifier</span><span class="p">(),</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.BRkNNaClassifier.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.adapt.BRkNNaClassifier" title="skmultilearn.adapt.brknn.BRkNNaClassifier"><span class="pre">BRkNNaClassifier</span></a></span></span><a class="headerlink" href="#skmultilearn.adapt.BRkNNaClassifier.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.adapt.BRkNNbClassifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.adapt.</span></span><span class="sig-name descname"><span class="pre">BRkNNbClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.BRkNNbClassifier" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BinaryRelevanceKNN</span></code></p>
+<p>Binary Relevance multi-label classifier based on k-Nearest Neighbors method.</p>
+<p>This version of the classifier assigns the most popular m labels of
+the neighbors, where m is the  average number of labels assigned to
+the object’s neighbors.</p>
+<section id="id2">
+<h2>Parameters<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>k<span class="classifier">int</span></dt><dd><p>number of neighbours</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h2>Attributes<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><a href="#id47"><span class="problematic" id="id48">knn_</span></a><span class="classifier">an instance of sklearn.NearestNeighbors</span></dt><dd><p>the nearest neighbors single-label classifier used underneath</p>
+</dd>
+<dt><a href="#id49"><span class="problematic" id="id50">neighbors_</span></a><span class="classifier">array of arrays of int, shape = (n_samples, k)</span></dt><dd><p>k neighbors of each sample</p>
+</dd>
+<dt><a href="#id51"><span class="problematic" id="id52">confidences_</span></a><span class="classifier">matrix of int, shape = (n_samples, n_labels)</span></dt><dd><p>label assignment confidences</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h2>References<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<p>If you use this method please cite the relevant paper:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">EleftheriosSpyromitros2008</span><span class="p">,</span>
+<span class="w">   </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Eleftherios Spyromitros, Grigorios Tsoumakas, Ioannis Vlahavas}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Proc. 5th Hellenic Conference on Artificial Intelligence (SETN 2008)}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{An Empirical Study of Lazy Multilabel Classification Algorithms}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2008}</span><span class="p">,</span>
+<span class="w">   </span><span class="na">location</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Syros, Greece}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h2>Examples<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<p>Here’s a very simple example of using BRkNNbClassifier with a fixed number of neighbors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">BRkNNbClassifier</span>
+
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">BRkNNbClassifier</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use <code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code> to find an optimal set of parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">BRkNNbClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)}</span>
+<span class="n">score</span> <span class="o">=</span> <span class="s1">&#39;f1-macro</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">BRkNNbClassifier</span><span class="p">(),</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.BRkNNbClassifier.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.adapt.BRkNNbClassifier" title="skmultilearn.adapt.brknn.BRkNNbClassifier"><span class="pre">BRkNNbClassifier</span></a></span></span><a class="headerlink" href="#skmultilearn.adapt.BRkNNbClassifier.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLARAM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.adapt.</span></span><span class="sig-name descname"><span class="pre">MLARAM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vigilance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neurons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLARAM" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skmultilearn.base.html#skmultilearn.base.MLClassifierBase" title="skmultilearn.base.base.MLClassifierBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLClassifierBase</span></code></a></p>
+<p>HARAM: A Hierarchical ARAM Neural Network for Large-Scale Text Classification</p>
+<p>This method aims at increasing the classification speed by adding an
+extra ART layer for clustering learned prototypes into large clusters.
+In this case the activation of all prototypes can be replaced by the
+activation of a small fraction of them, leading to a significant
+reduction of the classification time.</p>
+<section id="id8">
+<h2>Parameters<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>vigilance<span class="classifier">float (default is 0.9)</span></dt><dd><p>parameter for adaptive resonance theory networks, controls how
+large a hyperbox can be, 1 it is small (no compression), 0
+should assume all range. Normally set between 0.8 and 0.999,
+it is dataset dependent. It is responsible for the creation
+of the prototypes, therefore training of the network.</p>
+</dd>
+<dt>threshold<span class="classifier">float (default is 0.02)</span></dt><dd><p>controls how many prototypes participate by the prediction,
+can be changed for the testing phase.</p>
+</dd>
+<dt>neurons<span class="classifier">list</span></dt><dd><p>the neurons in the network</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h2>References<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<p>Published work available <a class="reference external" href="http://dx.doi.org/10.1109/ICDMW.2015.14">here</a>.</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@INPROCEEDINGS</span><span class="p">{</span><span class="nl">7395756</span><span class="p">,</span>
+<span class="w">    </span><span class="na">author</span><span class="p">=</span><span class="s">{F. Benites and E. Sapozhnikova}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">booktitle</span><span class="p">=</span><span class="s">{2015 IEEE International Conference on Data Mining Workshop (ICDMW)}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">title</span><span class="p">=</span><span class="s">{HARAM: A Hierarchical ARAM Neural Network for Large-Scale Text Classification}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">year</span><span class="p">=</span><span class="s">{2015}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">volume</span><span class="p">=</span><span class="s">{}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">number</span><span class="p">=</span><span class="s">{}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">pages</span><span class="p">=</span><span class="s">{847-854}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">doi</span><span class="p">=</span><span class="s">{10.1109/ICDMW.2015.14}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">ISSN</span><span class="p">=</span><span class="s">{2375-9259}</span><span class="p">,</span>
+<span class="w">    </span><span class="na">month</span><span class="p">=</span><span class="s">{Nov}</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h2>Examples<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<p>Here’s an example code with a 5% threshold and vigilance of 0.95:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">MLARAM</span>
+
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">MLARAM</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">vigilance</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">prediction</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLARAM.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLARAM.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fit classifier with training data</p>
+<section id="id11">
+<h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse</span></dt><dd><p>input features, can be a dense or sparse matrix of size
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+<dt>y<span class="classifier">numpy.ndarray or scipy.sparse {0,1}</span></dt><dd><p>binary indicator matrix with label assignments.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h3>Returns<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>skmultilearn.MLARAMfast.MLARAM</dt><dd><p>fitted instance of self</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLARAM.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLARAM.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Predict labels for X</p>
+<section id="id13">
+<h3>Parameters<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse.csc_matrix</span></dt><dd><p>input features of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h3>Returns<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>scipy.sparse of int</dt><dd><p>binary indicator matrix with label assignments with shape
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLARAM.predict_proba">
+<span class="sig-name descname"><span class="pre">predict_proba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLARAM.predict_proba" title="Link to this definition">¶</a></dt>
+<dd><p>Predict probabilities of label assignments for X</p>
+<section id="id15">
+<h3>Parameters<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse.csc_matrix</span></dt><dd><p>input features of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h3>Returns<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>array of arrays of float</dt><dd><p>matrix with label assignment probabilities of shape
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLARAM.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLARAM.reset" title="Link to this definition">¶</a></dt>
+<dd><p>Resets the labels and neurons</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLARAM.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.adapt.MLARAM" title="skmultilearn.adapt.mlaram.MLARAM"><span class="pre">MLARAM</span></a></span></span><a class="headerlink" href="#skmultilearn.adapt.MLARAM.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id17">
+<h3>Parameters<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h3>Returns<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLTSVM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.adapt.</span></span><span class="sig-name descname"><span class="pre">MLTSVM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sor_omega</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iteration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLTSVM" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skmultilearn.base.html#skmultilearn.base.MLClassifierBase" title="skmultilearn.base.base.MLClassifierBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLClassifierBase</span></code></a></p>
+<p>Twin multi-Label Support Vector Machines</p>
+<section id="id19">
+<h2>Parameters<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>c_k<span class="classifier">int</span></dt><dd><p>the empirical risk penalty parameter that determines the trade-off between the loss terms</p>
+</dd>
+<dt>sor_omega: float (default is 1.0)</dt><dd><p>the smoothing parameter</p>
+</dd>
+<dt>threshold<span class="classifier">int (default is 1e-6)</span></dt><dd><p>threshold above which a label should be assigned</p>
+</dd>
+<dt>lambda_param<span class="classifier">float (default is 1.0)</span></dt><dd><p>the regularization parameter</p>
+</dd>
+<dt>max_iteration<span class="classifier">int (default is 500)</span></dt><dd><p>maximum number of iterations to use in successive overrelaxation</p>
+</dd>
+</dl>
+</section>
+<section id="id20">
+<h2>References<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
+<p>If you use this classifier please cite the original paper introducing the method:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">chen2016mltsvm</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{MLTSVM: a novel twin support vector machine to multi-label learning}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Chen, Wei-Jie and Shao, Yuan-Hai and Li, Chun-Na and Deng, Nai-Yang}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{Pattern Recognition}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="p">=</span><span class="s">{52}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pages</span><span class="p">=</span><span class="s">{61--74}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2016}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">publisher</span><span class="p">=</span><span class="s">{Elsevier}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id21">
+<h2>Examples<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<p>Here’s a very simple example of using MLTSVM with a fixed number of neighbors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">MLTSVM</span>
+
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">MLTSVM</span><span class="p">(</span><span class="n">c_k</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use <code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code> to find an optimal set of parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">MLTSVM</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;c_k&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]}</span>
+<span class="n">score</span> <span class="o">=</span> <span class="s1">&#39;f1-macro</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">MLTSVM</span><span class="p">(),</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span> <span class="n">clf</span><span class="o">.</span><span class="n">best_score_</span><span class="p">)</span>
+
+<span class="c1"># output</span>
+<span class="p">{</span><span class="s1">&#39;c_k&#39;</span><span class="p">:</span> <span class="mf">0.03125</span><span class="p">}</span> <span class="mf">0.347518217573</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLTSVM.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLTSVM.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to fit classifier with training data</p>
+<p>It must return a fitted instance of <code class="code docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<section id="id22">
+<h3>Parameters<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse</span></dt><dd><p>input features, can be a dense or sparse matrix of size
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+<dt>y<span class="classifier">numpy.ndaarray or scipy.sparse {0,1}</span></dt><dd><p>binary indicator matrix with label assignments.</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Returns<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>object</dt><dd><p>fitted instance of self</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h3>Raises<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>NotImplementedError</dt><dd><p>this is just an abstract method</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLTSVM.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLTSVM.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to predict labels</p>
+<section id="id24">
+<h3>Parameters<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse.csc_matrix</span></dt><dd><p>input features of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id25">
+<h3>Returns<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>scipy.sparse of int</dt><dd><p>binary indicator matrix with label assignments with shape
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h3>Raises<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>NotImplementedError</dt><dd><p>this is just an abstract method</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLTSVM.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.adapt.MLTSVM" title="skmultilearn.adapt.mltsvm.MLTSVM"><span class="pre">MLTSVM</span></a></span></span><a class="headerlink" href="#skmultilearn.adapt.MLTSVM.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id27">
+<h3>Parameters<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id28">
+<h3>Returns<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLkNN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.adapt.</span></span><span class="sig-name descname"><span class="pre">MLkNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_first_neighbours</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLkNN" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="skmultilearn.base.html#skmultilearn.base.MLClassifierBase" title="skmultilearn.base.base.MLClassifierBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLClassifierBase</span></code></a></p>
+<p>kNN classification method adapted for multi-label classification</p>
+<p>MLkNN builds uses k-NearestNeighbors find nearest examples to a test class and uses Bayesian inference
+to select assigned labels.</p>
+<section id="id29">
+<h2>Parameters<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>k<span class="classifier">int</span></dt><dd><p>number of neighbours of each input instance to take into account</p>
+</dd>
+<dt>s: float (default is 1.0)</dt><dd><p>the smoothing parameter</p>
+</dd>
+<dt>ignore_first_neighbours<span class="classifier">int (default is 0)</span></dt><dd><p>ability to ignore first N neighbours, useful for comparing
+with other classification software.</p>
+</dd>
+<dt>n_jobs: int or None, optional (default=None)</dt><dd><p>The number of parallel jobs to run for neighbors search. None means 1 unless in a joblib.parallel_backend context. -1 means using all processors.</p>
+</dd>
+</dl>
+</section>
+<section id="id30">
+<h2>Attributes<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><a href="#id53"><span class="problematic" id="id54">knn_</span></a><span class="classifier">an instance of sklearn.NearestNeighbors</span></dt><dd><p>the nearest neighbors single-label classifier used underneath</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t know what <code class="code docutils literal notranslate"><span class="pre">ignore_first_neighbours</span></code>
+does, the default is safe. Please see this <a class="reference external" href="https://github.com/scikit-multilearn/scikit-multilearn/issues/22">issue</a>.</p>
+</div>
+</section>
+<section id="id31">
+<h2>References<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
+<p>If you use this classifier please cite the original paper introducing the method:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@article</span><span class="p">{</span><span class="nl">zhang2007ml</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{ML-KNN: A lazy learning approach to multi-label learning}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Zhang, Min-Ling and Zhou, Zhi-Hua}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{Pattern recognition}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="p">=</span><span class="s">{40}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">number</span><span class="p">=</span><span class="s">{7}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pages</span><span class="p">=</span><span class="s">{2038--2048}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="s">{2007}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">publisher</span><span class="p">=</span><span class="s">{Elsevier}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id32">
+<h2>Examples<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
+<p>Here’s a very simple example of using MLkNN with a fixed number of neighbors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">MLkNN</span>
+
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">MLkNN</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># train</span>
+<span class="n">classifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1"># predict</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">classifier</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use <code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code> to find an optimal set of parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">skmultilearn.adapt</span> <span class="kn">import</span> <span class="n">MLkNN</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]}</span>
+<span class="n">score</span> <span class="o">=</span> <span class="s1">&#39;f1_macro&#39;</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">MLkNN</span><span class="p">(),</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="n">clf</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span> <span class="n">clf</span><span class="o">.</span><span class="n">best_score_</span><span class="p">)</span>
+
+<span class="c1"># output</span>
+<span class="p">({</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span> <span class="mf">0.78988303374297597</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLkNN.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLkNN.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Fit classifier with training data</p>
+<section id="id33">
+<h3>Parameters<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse</span></dt><dd><p>input features, can be a dense or sparse matrix of size
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+<dt>y<span class="classifier">numpy.ndaarray or scipy.sparse {0,1}</span></dt><dd><p>binary indicator matrix with label assignments.</p>
+</dd>
+</dl>
+</section>
+<section id="id34">
+<h3>Returns<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self</dt><dd><p>fitted instance of self</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLkNN.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLkNN.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Predict labels for X</p>
+<section id="id35">
+<h3>Parameters<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse.csc_matrix</span></dt><dd><p>input features of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id36">
+<h3>Returns<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>scipy.sparse matrix of int</dt><dd><p>binary indicator matrix with label assignments with shape
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLkNN.predict_proba">
+<span class="sig-name descname"><span class="pre">predict_proba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.adapt.MLkNN.predict_proba" title="Link to this definition">¶</a></dt>
+<dd><p>Predict probabilities of label assignments for X</p>
+<section id="id37">
+<h3>Parameters<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse.csc_matrix</span></dt><dd><p>input features of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id38">
+<h3>Returns<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>scipy.sparse matrix of int</dt><dd><p>binary indicator matrix with label assignment probabilities
+with shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.adapt.MLkNN.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.adapt.MLkNN" title="skmultilearn.adapt.mlknn.MLkNN"><span class="pre">MLkNN</span></a></span></span><a class="headerlink" href="#skmultilearn.adapt.MLkNN.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id39">
+<h3>Parameters<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id40">
+<h3>Returns<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 <hr class="docutils" />
 <p><strong>Cite us</strong></p>
 <p>If you use scikit-multilearn-ng in your research and publish it, please consider citing scikit-multilearn:</p>
@@ -82,9 +868,9 @@
 <hr />
 <ul>
     
-    <li class="toctree-l1"><a href="genindex.html">Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/genindex.html">Index</a></li>
     
-    <li class="toctree-l1"><a href="py-modindex.html">Module Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/py-modindex.html">Module Index</a></li>
     
     <li class="toctree-l1"><a href="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/">GitHub Repository</a></li>
     

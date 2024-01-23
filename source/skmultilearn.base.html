@@ -30,8 +30,240 @@
 
           <div class="body" role="main">
             
-  <section id="skmultilearn-base-package">
-<h1>skmultilearn.base package<a class="headerlink" href="#skmultilearn-base-package" title="Link to this heading">¶</a></h1>
+  <section id="module-skmultilearn.base">
+<span id="skmultilearn-base-package"></span><h1>skmultilearn.base package<a class="headerlink" href="#module-skmultilearn.base" title="Link to this heading">¶</a></h1>
+<p>The <a class="reference internal" href="#module-skmultilearn.base" title="skmultilearn.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skmultilearn.base</span></code></a> module implements base
+classifier classes for scikit-multilearn’s multi-label classification.</p>
+<p>Two base classifier classes are in use currently in scikit-multilearn:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#skmultilearn.base.MLClassifierBase" title="skmultilearn.base.MLClassifierBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLClassifierBase</span></code></a> - a generic base class for multi-label classifiers</p></li>
+<li><p><a class="reference internal" href="#skmultilearn.base.ProblemTransformationBase" title="skmultilearn.base.ProblemTransformationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProblemTransformationBase</span></code></a> - the base class for problem transformation and ensemble approaches that handles a base classifier</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.base.MLClassifierBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.base.</span></span><span class="sig-name descname"><span class="pre">MLClassifierBase</span></span><a class="headerlink" href="#skmultilearn.base.MLClassifierBase" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ClassifierMixin</span></code></p>
+<p>Base class providing API and common functions for all multi-label
+classifiers.</p>
+<p>Implements base functionality for ML classifiers, especially the get/set params for
+scikit-learn compatibility.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>copyable_attrs<span class="classifier">List[str]</span></dt><dd><p>list of attribute names that should be copied when class is cloned</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.base.MLClassifierBase.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.base.MLClassifierBase.fit" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to fit classifier with training data</p>
+<p>It must return a fitted instance of <code class="code docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse</span></dt><dd><p>input features, can be a dense or sparse matrix of size
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+<dt>y<span class="classifier">numpy.ndaarray or scipy.sparse {0,1}</span></dt><dd><p>binary indicator matrix with label assignments.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>object</dt><dd><p>fitted instance of self</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h3>Raises<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>NotImplementedError</dt><dd><p>this is just an abstract method</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.base.MLClassifierBase.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.base.MLClassifierBase.get_params" title="Link to this definition">¶</a></dt>
+<dd><p>Get parameters to sub-objects</p>
+<p>Introspection of classifier for search models like
+cross-validation and grid search.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>deep<span class="classifier">bool</span></dt><dd><p>if <code class="code docutils literal notranslate"><span class="pre">True</span></code> all params will be introspected also and
+appended to the output dictionary.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h3>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>out<span class="classifier">dict</span></dt><dd><p>dictionary of all parameters and their values. If
+<code class="code docutils literal notranslate"><span class="pre">deep=True</span></code> the dictionary also holds the parameters
+of the parameters.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.base.MLClassifierBase.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.base.MLClassifierBase.predict" title="Link to this definition">¶</a></dt>
+<dd><p>Abstract method to predict labels</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>X<span class="classifier">numpy.ndarray or scipy.sparse.csc_matrix</span></dt><dd><p>input features of shape <code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h3>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>scipy.sparse of int</dt><dd><p>binary indicator matrix with label assignments with shape
+<code class="code docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_labels)</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Raises<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>NotImplementedError</dt><dd><p>this is just an abstract method</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.base.MLClassifierBase.set_params">
+<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.base.MLClassifierBase.set_params" title="Link to this definition">¶</a></dt>
+<dd><p>Propagate parameters to sub-objects</p>
+<p>Set parameters as returned by <code class="code docutils literal notranslate"><span class="pre">get_params</span></code>. Please
+see this <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/base.py#L243">link</a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.base.MLClassifierBase.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.base.MLClassifierBase" title="skmultilearn.base.base.MLClassifierBase"><span class="pre">MLClassifierBase</span></a></span></span><a class="headerlink" href="#skmultilearn.base.MLClassifierBase.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="skmultilearn.base.ProblemTransformationBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">skmultilearn.base.</span></span><span class="sig-name descname"><span class="pre">ProblemTransformationBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classifier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_dense</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skmultilearn.base.ProblemTransformationBase" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#skmultilearn.base.MLClassifierBase" title="skmultilearn.base.base.MLClassifierBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MLClassifierBase</span></code></a></p>
+<p>Base class providing common functions for multi-label classifiers
+that follow the problem transformation approach.</p>
+<p>Problem transformation is the approach in which the
+original multi-label classification problem is transformed into one
+or more single-label problems, which are then solved by single-class
+or multi-class classifiers.</p>
+<p>Scikit-multilearn provides a number of such methods:</p>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryRelevance</span></code> - performs a single-label single-class classification for each label and sums the results <code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryRelevance</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassificationHeterogeneousFeature</span></code> - performs augmentation of the feature set with extra features derived from label probabilities, iteratively resolving cyclic dependencies between features and labels.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassifierChains</span></code> - performs a single-label single-class classification for each label and sums the results <code class="xref py py-class docutils literal notranslate"><span class="pre">ClassifierChain</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LabelPowerset</span></code> - performs a single-label single-class classification for each label and sums the results <code class="xref py py-class docutils literal notranslate"><span class="pre">LabelPowerset</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">InstanceBasedLogisticRegression</span></code> - performs a combination of instance-based learning and logistic regression, using a K-Nearest Neighbor layer followed by Logistic Regression classifiers <code class="xref py py-class docutils literal notranslate"><span class="pre">InstanceBasedLogisticRegression</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridSearchCV</span></code> - performs hyperparameter tuning for each label classifier, considering structural properties and optimizing classifiers for each label <code class="xref py py-class docutils literal notranslate"><span class="pre">StructuredGridSearchCV</span></code></p></li>
+</ul>
+<section id="id8">
+<h2>Parameters<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>classifier<span class="classifier">scikit classifier type</span></dt><dd><p>The base classifier that will be used in a class, will be automagically put under self.classifier for future access.</p>
+</dd>
+<dt>require_dense<span class="classifier">boolean (default is False)</span></dt><dd><p>Whether the base classifier requires input as dense arrays.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skmultilearn.base.ProblemTransformationBase.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#skmultilearn.base.ProblemTransformationBase" title="skmultilearn.base.problem_transformation.ProblemTransformationBase"><span class="pre">ProblemTransformationBase</span></a></span></span><a class="headerlink" href="#skmultilearn.base.ProblemTransformationBase.set_score_request" title="Link to this definition">¶</a></dt>
+<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant if
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code>).
+Please see <span class="xref std std-ref">User Guide</span> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.3.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is only relevant if this estimator is used as a
+sub-estimator of a meta-estimator, e.g. used inside a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>. Otherwise it has no effect.</p>
+</div>
+<section id="id9">
+<h3>Parameters<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h3>Returns<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 <hr class="docutils" />
 <p><strong>Cite us</strong></p>
 <p>If you use scikit-multilearn-ng in your research and publish it, please consider citing scikit-multilearn:</p>
@@ -82,9 +314,9 @@
 <hr />
 <ul>
     
-    <li class="toctree-l1"><a href="genindex.html">Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/genindex.html">Index</a></li>
     
-    <li class="toctree-l1"><a href="py-modindex.html">Module Index</a></li>
+    <li class="toctree-l1"><a href="https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/py-modindex.html">Module Index</a></li>
     
     <li class="toctree-l1"><a href="https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/">GitHub Repository</a></li>
     
