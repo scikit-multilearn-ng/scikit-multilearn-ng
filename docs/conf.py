@@ -61,8 +61,8 @@ html_theme_options = {
     'github_type': 'star',
     'github_count': True,
     'extra_nav_links': {
-        'Index': 'genindex.html',
-        'Module Index': 'py-modindex.html',
+        'Index': 'https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/genindex.html',
+        'Module Index': 'https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/py-modindex.html',
         'GitHub Repository': 'https://github.com/scikit-multilearn-ng/scikit-multilearn-ng/',
         'License': 'source/license.html',
         'PyPI': 'https://pypi.org/project/scikit-multilearn-ng/',
