@@ -9,10 +9,9 @@ It is built on-top of various scientific Python packages
 ([numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/)) and
 follows a similar API to that of [scikit-learn](http://scikit-learn.org/).
 
-More documentation (until replaced by scikit-multilearn-ng specific ones):
+More documentation:
 
-- __Website:__ [scikit.ml](http://scikit.ml)
-- __Documentation:__ [scikit-multilearn Documentation](http://scikit.ml/api/skmultilearn.html)
+- __Website:__ [https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/](https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/)
 
 
 ## Features
