@@ -46,7 +46,6 @@ class BinaryRelevance(ProblemTransformationBase):
     An example use case for Binary Relevance classification
     with an :class:`sklearn.svm.SVC` base classifier which supports sparse input:
 
-
     .. code-block:: python
 
         from skmultilearn.problem_transform import BinaryRelevance
@@ -89,7 +88,6 @@ class BinaryRelevance(ProblemTransformationBase):
                 'classifier__kernel': ['rbf', 'linear'],
             },
         ]
-
 
         clf = GridSearchCV(BinaryRelevance(), parameters, scoring='accuracy')
         clf.fit(x, y)

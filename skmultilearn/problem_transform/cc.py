@@ -31,13 +31,10 @@ class ClassifierChain(ProblemTransformationBase):
     order : List[int], permutation of ``range(n_labels)``, optional
         the order in which the chain should go through labels, the default is ``range(n_labels)``
 
-
     Attributes
     ----------
     classifiers_ : List[:class:`~sklearn.base.BaseEstimator`] of shape `n_labels`
         list of classifiers trained per partition, set in :meth:`fit`
-
-
 
     References
     ----------
