@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.sparse import csr_matrix, hstack
+from scipy.sparse import csr_matrix, hstack, vstack
 from sklearn.base import clone
 from sklearn.utils import validation
 from sklearn.exceptions import NotFittedError
@@ -190,9 +190,8 @@ class ProbabilisticClassifierChain(ClassifierChain):
                         p[0, i] = c.predict_proba(self._ensure_input_format(x))[0][y[i]]
                     else:
                         y_slice = csr_matrix(y[:i].reshape(1, -1))
-                        stacked = hstack((x, y_slice)).reshape(1, -1)
+                        stacked = hstack([x, y_slice]).reshape(1, -1)
                         p[0, i] = c.predict_proba(self._ensure_input_format(stacked))[0][y[i]]
-
 
                 pp = np.prod(p)
 
@@ -202,18 +201,5 @@ class ProbabilisticClassifierChain(ClassifierChain):
 
             results.append(y_out)
 
-        y_proba = hstack(results)
-        return self._revert_order(y_proba)
-
-    def _order(self):
-        if self.order is not None:
-            return self.order
-
-        try:
-            return list(range(self._label_count))
-        except AttributeError:
-            raise NotFittedError("This Classifier Chain has not been fit yet")
-
-    def _revert_order(self, y):
-        original_col_order = [self._order().index(x) for x in range(self._label_count)]
-        return y[:, original_col_order]
+        y_proba = vstack(results)
+        return y_proba

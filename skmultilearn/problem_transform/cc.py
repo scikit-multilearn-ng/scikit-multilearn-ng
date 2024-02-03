@@ -115,7 +115,7 @@ class ClassifierChain(ProblemTransformationBase):
         self.order = order
         self.copyable_attrs = ["classifier", "require_dense", "order"]
 
-    def fit(self, X, y, order=None):
+    def fit(self, X, y):
         """Fits classifier to training data
 
         Parameters
