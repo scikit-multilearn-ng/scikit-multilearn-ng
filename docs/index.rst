@@ -20,7 +20,7 @@ scikit-multilearn-ng is a Python module capable of performing multi-label learni
 Features
 --------
 
-- **Native Python Implementation**: Variety of multi-label classification algorithms implemented natively in Python. See the `complete list of classifiers <https://link-to-classifiers>`_.
+- **Native Python Implementation**: Variety of multi-label classification algorithms implemented natively in Python.
 
 - **Interface to Meka**: Provides access to all methods available in MEKA, MULAN, and WEKA via a Meka wrapper class.
 
@@ -75,6 +75,8 @@ Basic Usage
 
    # Predict
    predictions = classifier.predict(X_test)
+
+To see more examples, please refer to the `example usage page <https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/_static/example_usage.html>`_.
 
 More examples and use cases will be added soon.
 

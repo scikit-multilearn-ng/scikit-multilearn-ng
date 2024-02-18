@@ -83,8 +83,7 @@ y_pred = classifier.predict(X_test)
 ```
 
 More examples and use-cases can be seen in the 
-[documentation](http://scikit.ml/api/classify.html). For using the MEKA
-wrapper, check this [link](http://scikit.ml/api/meka.html#mekawrapper).
+[documentation](https://scikit-multilearn-ng.github.io/scikit-multilearn-ng/_static/example_usage.html).
 
 ## Contributing
 

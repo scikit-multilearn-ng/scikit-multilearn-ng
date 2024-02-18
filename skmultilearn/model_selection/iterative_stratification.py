@@ -83,10 +83,8 @@ def iterative_train_test_split(X, y, test_size, random_state=None, shuffle=False
     ----------
     test_size : float, [0,1]
         the proportion of the dataset to include in the test split, the rest will be put in the train set
-
     random_state : None | int | np.random.RandomState
         the random state seed (optional)
-
     shuffle : bool
         Whether to shuffle the data before splitting into batches. Note that the samples within each split
         will not be shuffled.
