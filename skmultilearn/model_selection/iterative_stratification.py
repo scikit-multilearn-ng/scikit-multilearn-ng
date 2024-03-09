@@ -76,7 +76,13 @@ import itertools
 from sklearn.utils import check_random_state
 
 
-def iterative_train_test_split(X: np.ndarray, y: np.ndarray, test_size: float, random_state = None, shuffle: bool = False):
+def iterative_train_test_split(
+    X: np.ndarray,
+    y: np.ndarray,
+    test_size: float,
+    random_state=None,
+    shuffle: bool = False,
+):
     """Iteratively stratified train/test split
 
     Parameters
