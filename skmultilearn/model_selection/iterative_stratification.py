@@ -76,11 +76,21 @@ import itertools
 from sklearn.utils import check_random_state
 
 
-def iterative_train_test_split(X, y, test_size, random_state=None, shuffle=False):
+def iterative_train_test_split(
+    X: np.ndarray,
+    y: np.ndarray,
+    test_size: float,
+    random_state=None,
+    shuffle: bool = False,
+):
     """Iteratively stratified train/test split
 
     Parameters
     ----------
+    X : np.ndarray
+        input features
+    y : np.ndarray
+        input labels
     test_size : float, [0,1]
         the proportion of the dataset to include in the test split, the rest will be put in the train set
     random_state : None | int | np.random.RandomState
@@ -105,8 +115,8 @@ def iterative_train_test_split(X, y, test_size, random_state=None, shuffle=False
 
     train_indexes, test_indexes = next(stratifier.split(X, y))
 
-    X_train, y_train = X.loc[train_indexes], y.loc[train_indexes]
-    X_test, y_test = X.loc[test_indexes], y.loc[test_indexes]
+    X_train, y_train = X[train_indexes, :], y[train_indexes, :]
+    X_test, y_test = X[test_indexes, :], y[test_indexes, :]
 
     return X_train, X_test, y_train, y_test
 
