@@ -170,14 +170,7 @@ class Meka(MLClassifierBase):
 
         self.java_command = java_command
         if self.java_command is None:
-            # TODO: this will not be needed once we're python 3 ready - we will
-            # use it only in python 2.7 cases
-            from whichcraft import which
-
-            self.java_command = which("java")
-
-            if self.java_command is None:
-                raise ValueError("Java not found")
+            raise ValueError("Java not found")
 
         self.meka_classpath = meka_classpath
         if self.meka_classpath is None:

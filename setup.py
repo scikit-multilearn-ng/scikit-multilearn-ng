@@ -45,9 +45,6 @@ setup(
             "keras<=2.12.0",
             "tensorflow",
         ],
-        "meka": [
-            "whichcraft>=0.4.1",
-        ],
         "test": [
             "pytest",
             "pyhamcrest",
