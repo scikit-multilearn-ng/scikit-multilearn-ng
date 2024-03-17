@@ -204,9 +204,9 @@ def load_from_arff(
     ----------
     filename : str
         path to ARFF file
-    labelcount: integer
+    label_count: integer
         number of labels in the ARFF file
-    endian: str {"big", "little"} (default is "big")
+    label_location: str {"start", "end"} (default is "end")
         whether the ARFF file contains labels at the beginning of the
         attributes list ("start", MEKA format)
         or at the end ("end", MULAN format)
