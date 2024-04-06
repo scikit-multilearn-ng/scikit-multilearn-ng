@@ -20,7 +20,12 @@ Available criterias:
 +-------------------------+---------------------------------------------------------------------------------+
 """
 
-from .pct import PredictiveClusteringTree
+from .pct import (
+    PredictiveClusteringTree,
+    GiniCriterion,
+    EntropyCriterion,
+    CorrelationCriterion,
+)
 
 __all__ = [
     "PredictiveClusteringTree",

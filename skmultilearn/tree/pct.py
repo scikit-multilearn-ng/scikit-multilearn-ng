@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse import issparse
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
@@ -26,7 +27,7 @@ class GiniCriterion(SplitCriterion):
         if total_label_count == 0:
             return np.inf
         label_probs = label_counts / total_label_count
-        return 1 - np.sum(label_probs**2)
+        return 1 - np.sum(np.multiply(label_probs, label_probs))
 
     def calculate_gain(self, base_impurity, left_labels, right_labels):
         left_impurity = self.calculate_impurity(left_labels)
@@ -98,7 +99,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
 
     Parameters
     ----------
-    base_classifier : estimator, default=DecisionTreeClassifier()
+    classifier : estimator, default=DecisionTreeClassifier()
         The base classifier used at each leaf node of the tree. This classifier is trained on the subsets of data
         determined by the tree splits.¨
     criterion : SplitCriterion instance, default=GiniCriterion()
@@ -130,28 +131,36 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
 
     Notes
     -----
-    The tree-building process relies heavily on the chosen split criterion's ability to evaluate and select the most
-    informative splits. Custom split criteria can be implemented by extending the SplitCriterion abstract base class.
+    .. note ::
+
+        The tree-building process relies heavily on the chosen split criterion's ability to evaluate and select the most
+        informative splits. Custom split criteria can be implemented by extending the SplitCriterion abstract base class.
+
+    .. note ::
+
+        Currenlty only dense input data is supported.
 
     Examples
     --------
-    >>> from sklearn.datasets import make_multilabel_classification
-    >>> X, y = make_multilabel_classification(n_samples=100, n_features=20, n_classes=3, n_labels=2, random_state=0)
-    >>> pct = PredictiveClusteringTree(criterion=GiniCriterion(), max_depth=4, min_samples_split=2, min_samples_leaf=1)
-    >>> pct.fit(X, y)
-    >>> pct.predict(X[0:5])
+    .. code-block:: python
+
+        from sklearn.datasets import make_multilabel_classification
+        X, y = make_multilabel_classification(n_samples=100, n_features=20, n_classes=3, n_labels=2, random_state=42)
+        pct = PredictiveClusteringTree(criterion=GiniCriterion(), max_depth=4, min_samples_split=2, min_samples_leaf=1)
+        pct.fit(X, y)
+        pct.predict(X[0:5])
     """
 
     def __init__(
         self,
-        base_classifier=DecisionTreeClassifier(),
+        classifier=DecisionTreeClassifier(),
         criterion=GiniCriterion(),
         max_depth=5,
         min_samples_split=2,
         min_samples_leaf=1,
     ):
         self.criterion = criterion
-        self.base_classifier = base_classifier
+        self.classifier = classifier
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.min_samples_leaf = min_samples_leaf
@@ -221,13 +230,14 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             The root node of the subtree.
         """
         base_impurity = self.criterion.calculate_impurity(y)
+        all_rows_not_same = len(np.unique(y, axis=0)) == 1
         if (
-            len(np.unique(y, axis=0)) == 1
+            all_rows_not_same
             or depth >= self.max_depth
-            or len(X) < self.min_samples_split
+            or X.shape[0] < self.min_samples_split
         ):
             node = self.Node()
-            node.classifier = clone(self.base_classifier).fit(X, y)
+            node.classifier = clone(self.classifier).fit(X, y)
             return node
 
         best_gain = -np.inf
@@ -260,7 +270,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             return node
         else:
             node = self.Node()
-            node.classifier = clone(self.base_classifier).fit(X, y)
+            node.classifier = clone(self.classifier).fit(X, y)
             return node
 
     def predict(self, X):
