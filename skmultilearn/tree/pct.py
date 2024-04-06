@@ -2,49 +2,155 @@ import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
+from abc import ABC, abstractmethod
+
+
+class SplitCriterion(ABC):
+    @abstractmethod
+    def calculate_impurity(self, labels):
+        """Calculate the impurity of a dataset."""
+        pass
+
+    @abstractmethod
+    def calculate_gain(self, base_impurity, left_labels, right_labels):
+        """Calculate the information gain from a split."""
+        pass
+
+
+class GiniCriterion(SplitCriterion):
+    def calculate_impurity(self, labels):
+        if labels.size == 0:
+            return 0
+        label_counts = np.sum(labels, axis=0)
+        total_label_count = np.sum(label_counts)
+        if total_label_count == 0:
+            return np.inf
+        label_probs = label_counts / total_label_count
+        return 1 - np.sum(label_probs**2)
+
+    def calculate_gain(self, base_impurity, left_labels, right_labels):
+        left_impurity = self.calculate_impurity(left_labels)
+        right_impurity = self.calculate_impurity(right_labels)
+        weight_left = left_labels.shape[0] / (
+            left_labels.shape[0] + right_labels.shape[0]
+        )
+        weight_right = 1 - weight_left
+        return base_impurity - (
+            weight_left * left_impurity + weight_right * right_impurity
+        )
+
+
+class EntropyCriterion(SplitCriterion):
+    def calculate_impurity(self, labels):
+        if not labels.any():
+            return 0
+        label_probs = np.sum(labels, axis=0) / labels.shape[0]
+        label_probs = label_probs[label_probs > 0]
+        return -np.sum(label_probs * np.log2(label_probs))
+
+    def calculate_gain(self, base_impurity, left_labels, right_labels):
+        left_entropy = self.calculate_impurity(left_labels)
+        right_entropy = self.calculate_impurity(right_labels)
+        total = left_labels.shape[0] + right_labels.shape[0]
+        weighted_avg_entropy = (
+            left_labels.shape[0] * left_entropy + right_labels.shape[0] * right_entropy
+        ) / total
+        return base_impurity - weighted_avg_entropy
+
+
+class CorrelationCriterion(SplitCriterion):
+    def calculate_impurity(self, labels):
+        if labels.size == 0 or np.all(np.all(labels == labels[0, :], axis=0)):
+            return np.inf
+        std_labels = np.std(labels, axis=0)
+        valid_cols = std_labels > 0
+        if np.sum(valid_cols) < 2:
+            return np.inf
+        valid_labels = labels[:, valid_cols]
+        corr_matrix = np.abs(np.corrcoef(valid_labels, rowvar=False))
+        np.fill_diagonal(corr_matrix, 0)
+        avg_corr = np.mean(corr_matrix)
+        return avg_corr
+
+    def calculate_gain(self, base_impurity, left_labels, right_labels):
+        left_impurity = self.calculate_impurity(left_labels)
+        right_impurity = self.calculate_impurity(right_labels)
+        total_samples = left_labels.shape[0] + right_labels.shape[0]
+        weighted_avg_impurity = (
+            left_labels.shape[0] * left_impurity
+            + right_labels.shape[0] * right_impurity
+        ) / total_samples
+        return base_impurity - weighted_avg_impurity
 
 
 class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
     """
-    A predictive clustering tree algorithm for multi-label classification.
+    A predictive clustering tree (PCT) algorithm for multi-label classification that supports multiple split criteria.
 
-    This algorithm builds a decision tree structure where each leaf node represents a multi-label classifier
-    trained on a subset of the data. It recursively partitions the feature space based on the variance reduction
-    criterion, aiming to find splits that lead to maximal variance reduction in the label space.
+    This algorithm constructs a decision tree where each leaf node represents a multi-label classifier trained on a
+    subset of the data. It partitions the feature space recursively, aiming to find splits that lead to optimal
+    separation based on a specified impurity criterion, thereby potentially capturing complex label dependencies more
+    effectively.
+
+    The flexibility to choose between different splitting criteria (e.g., Gini, entropy, correlation) allows for tailored
+    approaches to handling multi-label data, enabling the algorithm to better accommodate the specific characteristics
+    and correlations present in the labels.
 
     Parameters
     ----------
     base_classifier : estimator, default=DecisionTreeClassifier()
-        The base classifier used at each leaf node of the tree.
+        The base classifier used at each leaf node of the tree. This classifier is trained on the subsets of data
+        determined by the tree splits.¨
+    criterion : SplitCriterion instance, default=GiniCriterion()
+        The criterion used to evaluate splits. Must be an instance of a class that extends the SplitCriterion
+        abstract base class.
     max_depth : int, default=5
-        The maximum depth of the tree.
+        The maximum depth of the tree. Limits the number of recursive splits to prevent overfitting.
     min_samples_split : int, default=2
-        The minimum number of samples required to split an internal node.
+        The minimum number of samples required to consider splitting an internal node. Helps prevent creating nodes
+        with too few samples.
     min_samples_leaf : int, default=1
-        The minimum number of samples required to be at a leaf node.
+        The minimum number of samples a leaf node must have. Ensures that each leaf has a minimum size,impacting the
+        granularity of the model.
 
     Attributes
     ----------
     n_features_in_ : int
-        The number of features in the input data.
+        The number of features in the input data upon fitting the model.
     tree_ : Node
-        The root node of the decision tree.
+        The root node of the decision tree. Each node in the tree represents a decision point or a leaf with an
+        associated classifier.
 
     Methods
     -------
-    fit(X, y)
-        Fit the predictive clustering tree to the training data.
-    predict(X)
-        Predict multi-label outputs for the input data.
-    """
-    def __init__(self, base_classifier=DecisionTreeClassifier(), max_depth=5, min_samples_split=2, min_samples_leaf=1):
-        if max_depth <= 0:
-            raise ValueError("max_depth must be positive.")
-        if min_samples_split < 2:
-            raise ValueError("min_samples_split must be at least 2.")
-        if min_samples_leaf < 1:
-            raise ValueError("min_samples_leaf must be positive.")
+    fit(X, y):
+        Fit the predictive clustering tree model to the training data.
+    predict(X):
+        Predict multi-label outputs for the input data using the trained tree.
 
+    Notes
+    -----
+    The tree-building process relies heavily on the chosen split criterion's ability to evaluate and select the most
+    informative splits. Custom split criteria can be implemented by extending the SplitCriterion abstract base class.
+
+    Examples
+    --------
+    >>> from sklearn.datasets import make_multilabel_classification
+    >>> X, y = make_multilabel_classification(n_samples=100, n_features=20, n_classes=3, n_labels=2, random_state=0)
+    >>> pct = PredictiveClusteringTree(criterion=GiniCriterion(), max_depth=4, min_samples_split=2, min_samples_leaf=1)
+    >>> pct.fit(X, y)
+    >>> pct.predict(X[0:5])
+    """
+
+    def __init__(
+        self,
+        base_classifier=DecisionTreeClassifier(),
+        criterion=GiniCriterion(),
+        max_depth=5,
+        min_samples_split=2,
+        min_samples_leaf=1,
+    ):
+        self.criterion = criterion
         self.base_classifier = base_classifier
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -67,6 +173,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         classifier : estimator or None
             The classifier associated with the leaf node.
         """
+
         def __init__(self):
             self.feature_index = None
             self.threshold = None
@@ -113,25 +220,33 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         node : Node
             The root node of the subtree.
         """
-        if len(np.unique(y, axis=0)) == 1 or depth >= self.max_depth or len(X) < self.min_samples_split:
+        base_impurity = self.criterion.calculate_impurity(y)
+        if (
+            len(np.unique(y, axis=0)) == 1
+            or depth >= self.max_depth
+            or len(X) < self.min_samples_split
+        ):
             node = self.Node()
             node.classifier = clone(self.base_classifier).fit(X, y)
             return node
 
+        best_gain = -np.inf
         best_idx, best_thr = None, None
-        max_variance_reduction = -np.inf
 
         for idx in range(self.n_features_in_):
-            thresholds = np.unique(X[:, idx])[1:-1]
-            
+            thresholds = np.unique(X[:, idx])
             for thr in thresholds:
                 left_idx = X[:, idx] < thr
                 right_idx = ~left_idx
-                if np.sum(left_idx) >= self.min_samples_leaf and np.sum(right_idx) >= self.min_samples_leaf:
+                if (
+                    np.sum(left_idx) >= self.min_samples_leaf
+                    and np.sum(right_idx) >= self.min_samples_leaf
+                ):
                     y_left, y_right = y[left_idx], y[right_idx]
-                    variance_reduction = self._multi_label_variance_reduction(y, y_left, y_right)
-                    if variance_reduction > max_variance_reduction:
-                        best_idx, best_thr, max_variance_reduction = idx, thr, variance_reduction
+                    gain = self.criterion.calculate_gain(base_impurity, y_left, y_right)
+                    if gain != np.inf and gain > best_gain:
+                        best_gain = gain
+                        best_idx, best_thr = idx, thr
 
         if best_idx is not None:
             left_idx = X[:, best_idx] < best_thr
@@ -148,32 +263,6 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             node.classifier = clone(self.base_classifier).fit(X, y)
             return node
 
-    def _multi_label_variance_reduction(self, y, y_left, y_right):
-        """
-        Calculate the multi-label variance reduction.
-
-        Parameters
-        ----------
-        y : array-like of shape (n_samples, n_labels)
-            The original label assignments.
-        y_left : array-like of shape (n_samples_left, n_labels)
-            The label assignments for the left split.
-        y_right : array-like of shape (n_samples_right, n_labels)
-            The label assignments for the right split.
-
-        Returns
-        -------
-        variance_reduction : float
-            The variance reduction achieved by the split.
-        """
-        total_variance = np.mean(np.var(y, axis=0))
-        left_variance = np.mean(np.var(y_left, axis=0))
-        right_variance = np.mean(np.var(y_right, axis=0))
-        weight_left = y_left.shape[0] / y.shape[0]
-        weight_right = y_right.shape[0] / y.shape[0]
-        variance_reduction = total_variance - (weight_left * left_variance + weight_right * right_variance)
-        return variance_reduction
-
     def predict(self, X):
         """
         Predict multi-label outputs for the input data.
@@ -188,7 +277,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         predictions : array-like of shape (n_samples, n_labels)
             The binary indicator matrix with predicted label assignments.
         """
-        check_is_fitted(self, ['tree_', 'n_features_in_'])
+        check_is_fitted(self, ["tree_", "n_features_in_"])
         X = check_array(X)
         predictions = np.array([self._predict(inputs, self.tree_) for inputs in X])
         return predictions
