@@ -20,7 +20,7 @@ class PCCTest(ClassifierBaseTest):
         )
 
         self.assertClassifierWorksWithSparsity(classifier, "dense")
-        self.assertClassifierWorksWithSparsity(classifier, "dense")
+        self.assertClassifierPredictsProbabilities(classifier, "dense")
 
     def test_if_sparse_classification_works_on_dense_base_classifier(self):
         classifier = ProbabilisticClassifierChain(
@@ -36,7 +36,7 @@ class PCCTest(ClassifierBaseTest):
         )
 
         self.assertClassifierWorksWithSparsity(classifier, "dense")
-        self.assertClassifierWorksWithSparsity(classifier, "dense")
+        self.assertClassifierPredictsProbabilities(classifier, "dense")
 
     def test_if_works_with_cross_validation(self):
         classifier = ProbabilisticClassifierChain(
