@@ -22,6 +22,7 @@ Subpackages
    skmultilearn.model_selection
    skmultilearn.problem_transform
    skmultilearn.tests
+   skmultilearn.tree
 
 Submodules
 ----------
