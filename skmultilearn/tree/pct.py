@@ -10,12 +10,12 @@ class SplitCriterion(ABC):
     @abstractmethod
     def calculate_impurity(self, labels):
         """Calculate the impurity of a dataset."""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def calculate_gain(self, base_impurity, left_labels, right_labels):
         """Calculate the information gain from a split."""
-        pass
+        raise NotImplementedError
 
 
 class GiniCriterion(SplitCriterion):
