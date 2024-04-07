@@ -1,13 +1,20 @@
 scikit-multilearn-ng Changelog
 ===========================
 
+v0.0.7 (released 2024-04-07)
+---------------------------
+Major enhancements and bug fixes include:
+- First implementation of Predictive Clustering Trees (PCT)
+- Probabilistic Classifier Chains (PCC) implementation for multi-label classification
+- Fixed issue in iterative_train_test_split.
+
 v0.0.6 (released 2024-01-21)
 ---------------------------
 Fixes a lot of bugs, improves stability and adds features, which include:
 - Classification with heterogeneous features
 - Structured GridSearchCV
 - Combining Instance-Based Learning and Logistic Regression
-- SMiLE algorithm for multi label with missing labels (which adds the sk.multilearn.missing submodule)
+- SMiLE algorithm for multi label with missing labels (which adds the skmultilearn.missing submodule)
 
 
 scikit-multilearn Changelog

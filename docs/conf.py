@@ -11,8 +11,8 @@ import sys
 project = 'scikit-multilearn-ng'
 copyright = '2014-2016, Piotr Szymański'
 author = 'scikit-multilearn-ng'
-version = '0.0.6'
-release = 'v0.0.6'
+version = '0.0.7'
+release = 'v0.0.7'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -8,7 +8,7 @@ Available Classifier:
 | `PredictiveClusteringTree` | A predictive clustering tree algorithm for multi-label classification.          |
 +----------------------------+---------------------------------------------------------------------------------+
 
-Available criterias:
+Available criteria's:
 +-------------------------+---------------------------------------------------------------------------------+
 | Criterion               | Description                                                                     |
 |=========================|=================================================================================|
