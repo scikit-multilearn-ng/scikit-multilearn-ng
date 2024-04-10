@@ -122,6 +122,8 @@ class MLTSVM(MLClassifierBase):
                 (H_k.T).dot(H_k) + self.lambda_param * identity_matrix
             ).dot(G_k.T)
             Q_k = G_k.dot(Q_knoPrefixGk)
+            if sp.issparse(Q_k):
+                Q_k = Q_k.A
             Q_k = (Q_k + Q_k.T) / 2.0
 
             # Calculate other
