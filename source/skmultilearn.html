@@ -171,7 +171,6 @@ built on top of the well-known scikit-learn ecosystem.</p>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ClassifierChain.fit"><code class="docutils literal notranslate"><span class="pre">ClassifierChain.fit()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ClassifierChain.predict"><code class="docutils literal notranslate"><span class="pre">ClassifierChain.predict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ClassifierChain.predict_proba"><code class="docutils literal notranslate"><span class="pre">ClassifierChain.predict_proba()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ClassifierChain.set_fit_request"><code class="docutils literal notranslate"><span class="pre">ClassifierChain.set_fit_request()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ClassifierChain.set_score_request"><code class="docutils literal notranslate"><span class="pre">ClassifierChain.set_score_request()</span></code></a></li>
 </ul>
 </li>
@@ -191,6 +190,12 @@ built on top of the well-known scikit-learn ecosystem.</p>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.LabelPowerset.transform"><code class="docutils literal notranslate"><span class="pre">LabelPowerset.transform()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ProbabilisticClassifierChain"><code class="docutils literal notranslate"><span class="pre">ProbabilisticClassifierChain</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ProbabilisticClassifierChain.predict"><code class="docutils literal notranslate"><span class="pre">ProbabilisticClassifierChain.predict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ProbabilisticClassifierChain.predict_proba"><code class="docutils literal notranslate"><span class="pre">ProbabilisticClassifierChain.predict_proba()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.ProbabilisticClassifierChain.set_score_request"><code class="docutils literal notranslate"><span class="pre">ProbabilisticClassifierChain.set_score_request()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.StructuredGridSearchCV"><code class="docutils literal notranslate"><span class="pre">StructuredGridSearchCV</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.StructuredGridSearchCV.find_optm_classifiers"><code class="docutils literal notranslate"><span class="pre">StructuredGridSearchCV.find_optm_classifiers()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="skmultilearn.problem_transform.html#skmultilearn.problem_transform.StructuredGridSearchCV.fit"><code class="docutils literal notranslate"><span class="pre">StructuredGridSearchCV.fit()</span></code></a></li>
@@ -201,7 +206,31 @@ built on top of the well-known scikit-learn ecosystem.</p>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="skmultilearn.tree.html">skmultilearn.tree package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="skmultilearn.tree.html">skmultilearn.tree package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.CorrelationCriterion"><code class="docutils literal notranslate"><span class="pre">CorrelationCriterion</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.CorrelationCriterion.calculate_gain"><code class="docutils literal notranslate"><span class="pre">CorrelationCriterion.calculate_gain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.CorrelationCriterion.calculate_impurity"><code class="docutils literal notranslate"><span class="pre">CorrelationCriterion.calculate_impurity()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.EntropyCriterion"><code class="docutils literal notranslate"><span class="pre">EntropyCriterion</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.EntropyCriterion.calculate_gain"><code class="docutils literal notranslate"><span class="pre">EntropyCriterion.calculate_gain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.EntropyCriterion.calculate_impurity"><code class="docutils literal notranslate"><span class="pre">EntropyCriterion.calculate_impurity()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.GiniCriterion"><code class="docutils literal notranslate"><span class="pre">GiniCriterion</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.GiniCriterion.calculate_gain"><code class="docutils literal notranslate"><span class="pre">GiniCriterion.calculate_gain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.GiniCriterion.calculate_impurity"><code class="docutils literal notranslate"><span class="pre">GiniCriterion.calculate_impurity()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.PredictiveClusteringTree"><code class="docutils literal notranslate"><span class="pre">PredictiveClusteringTree</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.PredictiveClusteringTree.Node"><code class="docutils literal notranslate"><span class="pre">PredictiveClusteringTree.Node</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.PredictiveClusteringTree.fit"><code class="docutils literal notranslate"><span class="pre">PredictiveClusteringTree.fit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.PredictiveClusteringTree.predict"><code class="docutils literal notranslate"><span class="pre">PredictiveClusteringTree.predict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="skmultilearn.tree.html#skmultilearn.tree.PredictiveClusteringTree.set_score_request"><code class="docutils literal notranslate"><span class="pre">PredictiveClusteringTree.set_score_request()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -354,9 +383,9 @@ format, see data_sets</p>
 <dl class="simple">
 <dt>filename<span class="classifier">str</span></dt><dd><p>path to ARFF file</p>
 </dd>
-<dt>labelcount: integer</dt><dd><p>number of labels in the ARFF file</p>
+<dt>label_count: integer</dt><dd><p>number of labels in the ARFF file</p>
 </dd>
-<dt>endian: str {“big”, “little”} (default is “big”)</dt><dd><p>whether the ARFF file contains labels at the beginning of the
+<dt>label_location: str {“start”, “end”} (default is “end”)</dt><dd><p>whether the ARFF file contains labels at the beginning of the
 attributes list (“start”, MEKA format)
 or at the end (“end”, MULAN format)</p>
 </dd>
