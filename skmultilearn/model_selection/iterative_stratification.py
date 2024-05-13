@@ -101,7 +101,7 @@ def iterative_train_test_split(
 
     Returns
     -------
-    X_train, y_train, X_test, y_test
+    X_train, X_test, y_train, y_test
         stratified division into train/test split
     """
 
