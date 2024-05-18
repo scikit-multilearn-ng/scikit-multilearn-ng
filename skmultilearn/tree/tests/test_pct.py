@@ -40,12 +40,10 @@ class TestSplitCriteria(unittest.TestCase):
 
 class PCCTest(ClassifierBaseTest):
     # TODO: Support sparse matrices
-    # def test_if_sparse_classification_works(self):
-    #    classifier = PredictiveClusteringTree(
-    #        classifier=DecisionTreeClassifier()
-    #    )
+    def test_if_sparse_classification_works(self):
+        classifier = PredictiveClusteringTree(classifier=DecisionTreeClassifier())
 
-    #    self.assertClassifierWorksWithSparsity(classifier, "sparse")
+        self.assertClassifierWorksWithSparsity(classifier, "sparse")
 
     def test_if_dense_classification_works(self):
         classifier = PredictiveClusteringTree(classifier=DecisionTreeClassifier())
