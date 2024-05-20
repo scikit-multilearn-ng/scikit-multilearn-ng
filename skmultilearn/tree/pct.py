@@ -22,11 +22,14 @@ class GiniCriterion(SplitCriterion):
     def calculate_impurity(self, labels):
         if labels.size == 0:
             return 0
-        label_counts = np.sum(labels, axis=0)
-        total_label_count = np.sum(label_counts)
+        if issparse(labels):
+            label_sums = labels.sum(axis=0).A1
+        else:
+            label_sums = np.sum(labels, axis=0)
+        total_label_count = np.sum(label_sums)
         if total_label_count == 0:
             return np.inf
-        label_probs = label_counts / total_label_count
+        label_probs = label_sums / total_label_count
         return 1 - np.sum(np.multiply(label_probs, label_probs))
 
     def calculate_gain(self, base_impurity, left_labels, right_labels):
@@ -43,9 +46,18 @@ class GiniCriterion(SplitCriterion):
 
 class EntropyCriterion(SplitCriterion):
     def calculate_impurity(self, labels):
-        if not labels.any():
+        if issparse(labels):
+            if not labels.nnz:
+                return 0
+            label_sums = labels.sum(axis=0).A1
+        else:
+            if not labels.any():
+                return 0
+            label_sums = np.sum(labels, axis=0)
+        total = label_sums.sum()
+        if total == 0:
             return 0
-        label_probs = np.sum(labels, axis=0) / labels.shape[0]
+        label_probs = label_sums / total
         label_probs = label_probs[label_probs > 0]
         return -np.sum(label_probs * np.log2(label_probs))
 
@@ -61,7 +73,11 @@ class EntropyCriterion(SplitCriterion):
 
 class CorrelationCriterion(SplitCriterion):
     def calculate_impurity(self, labels):
-        if labels.size == 0 or np.all(np.all(labels == labels[0, :], axis=0)):
+        if labels.size == 0:
+            return np.inf
+        if issparse(labels):
+            labels = labels.toarray()
+        if np.all(np.all(labels == labels[0, :], axis=0)):
             return np.inf
         std_labels = np.std(labels, axis=0)
         valid_cols = std_labels > 0
@@ -210,6 +226,18 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         self.n_features_in_ = X.shape[1]
         self.tree_ = self._grow_tree(X, y)
         return self
+    
+    def _check_all_rows_same(self, y):
+        if issparse(y):
+            if y.shape[0] <= 1:
+                return True
+            first_row = y[0].toarray()
+            for i in range(1, y.shape[0]):
+                if not np.array_equal(first_row, y[i].toarray()):
+                    return False
+            return True
+        else:
+            return len(np.unique(y, axis=0)) == 1
 
     def _grow_tree(self, X, y, depth=0):
         """
@@ -229,29 +257,38 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         node : Node
             The root node of the subtree.
         """
+        if issparse(X):
+            X = X.tocsc()
         base_impurity = self.criterion.calculate_impurity(y)
-        all_rows_not_same = len(np.unique(y, axis=0)) == 1
+        all_rows_not_same = self._check_all_rows_same(y)
         if (
             all_rows_not_same
             or depth >= self.max_depth
             or X.shape[0] < self.min_samples_split
         ):
             node = self.Node()
-            node.classifier = clone(self.classifier).fit(X, y)
+            dense_y = y.toarray() if issparse(y) else y
+            node.classifier = clone(self.classifier).fit(X, dense_y)
             return node
 
         best_gain = -np.inf
         best_idx, best_thr = None, None
 
         for idx in range(self.n_features_in_):
-            thresholds = np.unique(X[:, idx])
+            if issparse(X):
+                column_values = X[:, idx].A.ravel()
+            else:
+                column_values = X[:, idx]
+            thresholds = np.unique(column_values)
             for thr in thresholds:
-                left_idx = X[:, idx] < thr
-                right_idx = ~left_idx
-                if (
-                    np.sum(left_idx) >= self.min_samples_leaf
-                    and np.sum(right_idx) >= self.min_samples_leaf
-                ):
+                if issparse(X):
+                    left_idx = X[:, idx].A.ravel() < thr
+                    right_idx = np.logical_not(left_idx)
+                else:
+                    left_idx = column_values < thr
+                    right_idx = ~left_idx
+
+                if np.sum(left_idx) >= self.min_samples_leaf and np.sum(right_idx) >= self.min_samples_leaf:
                     y_left, y_right = y[left_idx], y[right_idx]
                     gain = self.criterion.calculate_gain(base_impurity, y_left, y_right)
                     if gain != np.inf and gain > best_gain:
@@ -259,9 +296,15 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
                         best_idx, best_thr = idx, thr
 
         if best_idx is not None:
-            left_idx = X[:, best_idx] < best_thr
+            if issparse(X):
+                left_idx = X[:, best_idx].A.ravel() < best_thr
+                right_idx = np.logical_not(left_idx)
+            else:
+                left_idx = X[:, best_idx] < best_thr
+                right_idx = ~left_idx
+
             X_left, y_left = X[left_idx], y[left_idx]
-            X_right, y_right = X[~left_idx], y[~left_idx]
+            X_right, y_right = X[right_idx], y[right_idx]
             node = self.Node()
             node.feature_index = best_idx
             node.threshold = best_thr
@@ -270,7 +313,8 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             return node
         else:
             node = self.Node()
-            node.classifier = clone(self.classifier).fit(X, y)
+            dense_y = y.toarray() if issparse(y) else y
+            node.classifier = clone(self.classifier).fit(X, dense_y)
             return node
 
     def predict(self, X):
@@ -288,9 +332,13 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             The binary indicator matrix with predicted label assignments.
         """
         check_is_fitted(self, ["tree_", "n_features_in_"])
-        X = check_array(X)
-        predictions = np.array([self._predict(inputs, self.tree_) for inputs in X])
-        return predictions
+        X = check_array(X, accept_sparse=True)
+        if issparse(X):
+            predictions = [self._predict(X[i].toarray().ravel(), self.tree_) for i in range(X.shape[0])]
+        else:
+            predictions = [self._predict(inputs, self.tree_) for inputs in X]
+        
+        return np.array(predictions)
 
     def _predict(self, inputs, node):
         """
