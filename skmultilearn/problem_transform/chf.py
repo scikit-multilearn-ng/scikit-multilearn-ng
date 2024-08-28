@@ -208,6 +208,8 @@ class ClassificationHeterogeneousFeature(ProblemTransformationBase):
             )
             self.classifiers_.append(classifier)
 
+        self.classes_ = [classifier.classes_ for classifier in self.classifiers_]
+
         return self
 
     def predict(self, X):

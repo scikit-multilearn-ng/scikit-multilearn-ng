@@ -138,6 +138,7 @@ class LabelPowerset(ProblemTransformationBase):
         X = self._ensure_input_format(X, sparse_format="csr", enforce_sparse=True)
 
         self.classifier.fit(self._ensure_input_format(X), self.transform(y))
+        self.classes_ = self.classifier.classes_
 
         return self
 
