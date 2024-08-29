@@ -136,6 +136,15 @@ class MLTSVM(MLClassifierBase):
         self.wk_norms = norm(self.wk_bk, axis=1)
         self.treshold = 1.0 / np.max(self.wk_norms)
 
+        self.classes_ = []
+        # Using `dtype=np.intp` is necessary since `np.bincount`
+        # (called in _classification.py) fails when dealing
+        # with a float64 array on 32bit systems.
+        self._y = np.empty(Y.shape, dtype=np.intp)
+        for k in range(self._y.shape[1]):
+            classes, self._y[:, k] = np.unique(y[:, k], return_inverse=True)
+            self.classes_.append(classes)
+
     def predict(self, X):
         X_with_bias = _hstack(X, np.ones((X.shape[0], 1), dtype=X.dtype))
         wk_norms_multiplicated = self.wk_norms[

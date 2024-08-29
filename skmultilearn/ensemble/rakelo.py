@@ -127,7 +127,9 @@ class RakelO(MLClassifierBase):
             ),
             require_dense=[False, False],
         )
-        return self.classifier.fit(X, y)
+        classifier = self.classifier.fit(X, y)
+        self.classes_ = classifier.classes_
+        return classifier
 
     def predict(self, X):
         """Predict labels for X

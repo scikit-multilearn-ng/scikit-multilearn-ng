@@ -37,6 +37,7 @@ class _BinaryRelevanceKNN(MLClassifierBase):
         self._n_samples = self.train_labelspace.shape[0]
         self._n_labels = self.train_labelspace.shape[1]
         self.knn_ = NearestNeighbors(n_neighbors=self.k).fit(X)
+        self.classes_ = self.knn_.classes_
         return self
 
     def predict(self, X):
