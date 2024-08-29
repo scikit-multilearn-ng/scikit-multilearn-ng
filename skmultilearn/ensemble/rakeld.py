@@ -126,7 +126,9 @@ class RakelD(MLClassifierBase):
             ),
             require_dense=[False, False],
         )
-        return self.classifier_.fit(X, y)
+        classifier = self.classifier_.fit(X, y)
+        self.classes_ = classifier.classes_
+        return classifier
 
     def predict(self, X):
         """Predict label assignments

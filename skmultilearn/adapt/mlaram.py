@@ -234,6 +234,15 @@ class MLARAM(MLClassifierBase):
             labels_won_indicator[label_assignment_vector.nonzero()] = 1
             self.neurons[winner].label += labels_won_indicator
 
+        self.classes_ = []
+        # Using `dtype=np.intp` is necessary since `np.bincount`
+        # (called in _classification.py) fails when dealing
+        # with a float64 array on 32bit systems.
+        self._y = numpy.empty(y.shape, dtype=numpy.intp)
+        for k in range(self._y.shape[1]):
+            classes, self._y[:, k] = numpy.unique(y[:, k], return_inverse=True)
+            self.classes_.append(classes)
+
         return self
 
     def predict(self, X):
