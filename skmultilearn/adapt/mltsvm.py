@@ -142,7 +142,7 @@ class MLTSVM(MLClassifierBase):
         # with a float64 array on 32bit systems.
         self._y = np.empty(Y.shape, dtype=np.intp)
         for k in range(self._y.shape[1]):
-            classes, self._y[:, k] = np.unique(y[:, k], return_inverse=True)
+            classes, self._y[:, k] = np.unique(Y[:, k], return_inverse=True)
             self.classes_.append(classes)
 
     def predict(self, X):
