@@ -193,7 +193,7 @@ class MLTSVM(MLClassifierBase):
 
 def _get_x_noclass_instances(X, Y, label_class):
     if sp.issparse(Y):
-        indices = np.where(Y[:, 1].A == 0)[0]
+        indices = np.where(Y[:, 1].to_array() == 0)[0]
     else:
         indices = np.where(Y[:, 1] == 0)[0]
     return X[indices, :]
