@@ -10,12 +10,12 @@ class ProbabilisticClassifierChain(ClassifierChain):
     """
     Probabilistic Classifier Chain for Multi-Label Classification
 
-    This class implements a Probabilistic Classifier Chain (PCC), an extension of 
-    Jesse Read's Classifier Chains. It learns a chain of classifiers, each predicting 
-    a label conditioned on the input features and the predictions of preceding classifiers 
+    This class implements a Probabilistic Classifier Chain (PCC), an extension of
+    Jesse Read's Classifier Chains. It learns a chain of classifiers, each predicting
+    a label conditioned on the input features and the predictions of preceding classifiers
     in the chain. This approach models joint label distributions to capture label correlations.
 
-    Each classifier in the chain is trained on an augmented input space that includes the 
+    Each classifier in the chain is trained on an augmented input space that includes the
     original features (X) and the predictions of all previous classifiers in the chain.
 
     The implementation adapted and changed from:
@@ -27,9 +27,9 @@ class ProbabilisticClassifierChain(ClassifierChain):
         A scikit-learn compatible base classifier. This classifier is used as the base model
         for each step in the classifier chain.
     require_dense : [bool, bool], optional
-        Indicates whether the base classifier requires dense representations for input features 
-        and label matrices in fit/predict. If not provided, it defaults to using sparse 
-        representations unless the base classifier is an instance of 
+        Indicates whether the base classifier requires dense representations for input features
+        and label matrices in fit/predict. If not provided, it defaults to using sparse
+        representations unless the base classifier is an instance of
         :class:`~skmultilearn.base.MLClassifierBase`, in which case dense representations are used.
     order : List[int], permutation of ``range(n_labels)``, optional
         the order in which the chain should go through labels, the default is ``range(n_labels)``

@@ -226,7 +226,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         self.n_features_in_ = X.shape[1]
         self.tree_ = self._grow_tree(X, y)
         return self
-    
+
     def _check_all_rows_same(self, y):
         if issparse(y):
             if y.shape[0] <= 1:
@@ -276,13 +276,13 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
 
         for idx in range(self.n_features_in_):
             if issparse(X):
-                column_values = X[:, idx].A.ravel()
+                column_values = X[:, idx].toarray().ravel()
             else:
                 column_values = X[:, idx]
             thresholds = np.unique(column_values)
             for thr in thresholds:
                 if issparse(X):
-                    left_idx = X[:, idx].A.ravel() < thr
+                    left_idx = X[:, idx].toarray().ravel() < thr
                     right_idx = np.logical_not(left_idx)
                 else:
                     left_idx = column_values < thr
@@ -297,7 +297,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
 
         if best_idx is not None:
             if issparse(X):
-                left_idx = X[:, best_idx].A.ravel() < best_thr
+                left_idx = X[:, best_idx].toarray().ravel() < best_thr
                 right_idx = np.logical_not(left_idx)
             else:
                 left_idx = X[:, best_idx] < best_thr
@@ -337,7 +337,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             predictions = [self._predict(X[i].toarray().ravel(), self.tree_) for i in range(X.shape[0])]
         else:
             predictions = [self._predict(inputs, self.tree_) for inputs in X]
-        
+
         return np.array(predictions)
 
     def _predict(self, inputs, node):
