@@ -313,7 +313,7 @@ class MLARAM(MLClassifierBase):
         if any(map(issparse, neuron_vectors)):
             all_neurons = scipy.sparse.vstack(neuron_vectors)
             # can't add a constant to a sparse matrix in scipy
-            all_neurons_sum = all_neurons.sum(1).A
+            all_neurons_sum = all_neurons.sum(1).toarray()
         else:
             all_neurons = numpy.vstack(neuron_vectors)
             all_neurons_sum = all_neurons.sum(1)

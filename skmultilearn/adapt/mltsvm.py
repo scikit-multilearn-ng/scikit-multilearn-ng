@@ -123,7 +123,7 @@ class MLTSVM(MLClassifierBase):
             ).dot(G_k.T)
             Q_k = G_k.dot(Q_knoPrefixGk)
             if sp.issparse(Q_k):
-                Q_k = Q_k.A
+                Q_k = Q_k.toarray()
             Q_k = (Q_k + Q_k.T) / 2.0
 
             # Calculate other
