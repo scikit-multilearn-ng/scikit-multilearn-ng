@@ -276,13 +276,13 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
 
         for idx in range(self.n_features_in_):
             if issparse(X):
-                column_values = X[:, idx].to_array().ravel()
+                column_values = X[:, idx].toarray().ravel()
             else:
                 column_values = X[:, idx]
             thresholds = np.unique(column_values)
             for thr in thresholds:
                 if issparse(X):
-                    left_idx = X[:, idx].to_array().ravel() < thr
+                    left_idx = X[:, idx].toarray().ravel() < thr
                     right_idx = np.logical_not(left_idx)
                 else:
                     left_idx = column_values < thr
@@ -297,7 +297,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
 
         if best_idx is not None:
             if issparse(X):
-                left_idx = X[:, best_idx].to_array().ravel() < best_thr
+                left_idx = X[:, best_idx].toarray().ravel() < best_thr
                 right_idx = np.logical_not(left_idx)
             else:
                 left_idx = X[:, best_idx] < best_thr
