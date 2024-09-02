@@ -226,7 +226,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
         self.n_features_in_ = X.shape[1]
         self.tree_ = self._grow_tree(X, y)
         return self
-    
+
     def _check_all_rows_same(self, y):
         if issparse(y):
             if y.shape[0] <= 1:
@@ -337,7 +337,7 @@ class PredictiveClusteringTree(BaseEstimator, ClassifierMixin):
             predictions = [self._predict(X[i].toarray().ravel(), self.tree_) for i in range(X.shape[0])]
         else:
             predictions = [self._predict(inputs, self.tree_) for inputs in X]
-        
+
         return np.array(predictions)
 
     def _predict(self, inputs, node):
