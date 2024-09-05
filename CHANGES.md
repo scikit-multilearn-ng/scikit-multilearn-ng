@@ -1,6 +1,12 @@
 scikit-multilearn-ng Changelog
 ===========================
 
+v0.0.8 (released 2024-09-05)
+---------------------------
+General bug fixes and improvements including:
+- Add sparse support for PCT
+- Add .classes_ to classifiers to fix GridSearchCV and Pipeline compatibility
+
 v0.0.7 (released 2024-04-07)
 ---------------------------
 Major enhancements and bug fixes include:
